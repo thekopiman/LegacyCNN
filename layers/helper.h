@@ -55,6 +55,21 @@ public:
             }
         }
     }
+
+    template <size_t rows, size_t cols>
+    static void ReLU(float (&input)[rows][cols])
+    {
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                if (input[i][j] <= 0)
+                {
+                    input[i][j] = 0;
+                }
+            }
+        }
+    }
 };
 
 #endif

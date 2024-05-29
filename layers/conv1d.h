@@ -1,6 +1,7 @@
 #ifndef conv1d_h
 #define conv1d_h
 
+// out_dim = (input_width + 2*pad - dilation*(kernal - 1) - 1)/stride + 1
 template <int kernal, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim>
 class Conv1d
 {
@@ -15,7 +16,7 @@ public:
 			{
 				for (int k = 0; k < (kernal - 1) * dilation + 1; ++k)
 				{
-					this->matrix[i][j][k] = 0.0f; // Initialize with 0.0f
+					this->matrix[i][j][k] = 1.0f; // Initialize with 0.0f
 				}
 			}
 		}

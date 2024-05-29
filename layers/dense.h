@@ -14,7 +14,7 @@ public:
         {
             for (int j = 0; j < output_dim; j++)
             {
-                weights[i][j] = 0.0f;
+                weights[i][j] = 1.0f;
             }
         }
 
@@ -23,7 +23,7 @@ public:
         {
             bias[i] = 0.0f;
         }
-    }
+    };
 
     void setWeights(float (&new_weights)[input_dim][output_dim])
     {

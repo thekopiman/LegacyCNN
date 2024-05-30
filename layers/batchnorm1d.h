@@ -6,7 +6,6 @@
 #include <assert.h>
 #include <string>
 #include <iostream>
-#include <vector>
 
 // https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm1d.html
 template <int channel, int width>
@@ -76,14 +75,8 @@ public:
         int total_size = dim1;
 
         // Read flattened array
-        std::vector<float> flat_array(total_size);
-        infile.read(reinterpret_cast<char *>(flat_array.data()), total_size * sizeof(float));
+        infile.read(reinterpret_cast<char *>(this->gamma), total_size * sizeof(float));
         infile.close();
-
-        for (int i = 0; i < dim1; ++i)
-        {
-            this->gamma[i] = flat_array[i];
-        }
     };
 
     // Overloading
@@ -106,14 +99,8 @@ public:
         int total_size = dim1;
 
         // Read flattened array
-        std::vector<float> flat_array(total_size);
-        infile.read(reinterpret_cast<char *>(flat_array.data()), total_size * sizeof(float));
+        infile.read(reinterpret_cast<char *>(this->beta), total_size * sizeof(float));
         infile.close();
-
-        for (int i = 0; i < dim1; ++i)
-        {
-            this->beta[i] = flat_array[i];
-        }
     };
 
     void setEps(float var)

@@ -89,9 +89,7 @@ public:
 		int total_size = dim1 * dim2 * dim3;
 
 		// Read flattened array
-		// std::vector<float> flat_array(total_size);
-		// infile.read(reinterpret_cast<char *>(flat_array.data()), total_size * sizeof(float));
-		infile.read(reinterpret_cast<char *>(flat_matrix), total_size * sizeof(float));
+		infile.read(reinterpret_cast<char *>(this->flat_matrix), total_size * sizeof(float));
 		infile.close();
 
 		for (int i = 0; i < dim1; ++i)
@@ -100,8 +98,7 @@ public:
 			{
 				for (int k = 0; k < dim3; ++k)
 				{
-					// this->matrix[i][j][k * dilation] = flat_array[i * dim2 * dim3 + j * dim3 + k];
-					this->matrix[i][j][k * dilation] = flat_matrix[i * dim2 * dim3 + j * dim3 + k];
+					this->matrix[i][j][k * dilation] = this->flat_matrix[i * dim2 * dim3 + j * dim3 + k];
 				}
 			}
 		}
@@ -142,14 +139,8 @@ public:
 		int total_size = dim1;
 
 		// Read flattened array
-		std::vector<float> flat_array(total_size);
-		infile.read(reinterpret_cast<char *>(flat_array.data()), total_size * sizeof(float));
+		infile.read(reinterpret_cast<char *>(this->bias), total_size * sizeof(float));
 		infile.close();
-
-		for (int i = 0; i < dim1; ++i)
-		{
-			this->bias[i] = flat_array[i];
-		}
 
 		// Output to verify correctness
 		// std::cout << "Read 3D array dimensions: (" << dim1 << ", " << dim2 << ", " << dim3 << ")\n";

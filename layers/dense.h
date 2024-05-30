@@ -5,7 +5,6 @@
 #include <assert.h>
 #include <string>
 #include <fstream>
-#include <vector>
 template <int input_dim, int output_dim>
 class Dense
 {
@@ -70,14 +69,8 @@ public:
         int total_size = dim1;
 
         // Read flattened array
-        std::vector<float> flat_array(total_size);
-        infile.read(reinterpret_cast<char *>(flat_array.data()), total_size * sizeof(float));
+        infile.read(reinterpret_cast<char *>(this->bias), total_size * sizeof(float));
         infile.close();
-
-        for (int i = 0; i < dim1; ++i)
-        {
-            this->bias[i] = flat_array[i];
-        }
     };
 
     // Overloading
@@ -102,15 +95,14 @@ public:
         int total_size = dim1 * dim2;
 
         // Read flattened array
-        std::vector<float> flat_array(total_size);
-        infile.read(reinterpret_cast<char *>(flat_array.data()), total_size * sizeof(float));
+        infile.read(reinterpret_cast<char *>(this->flat_weights), total_size * sizeof(float));
         infile.close();
 
         for (int i = 0; i < dim1; ++i)
         {
             for (int j = 0; j < dim2; ++j)
             {
-                this->weights[i][j] = flat_array[i * dim2 + j];
+                this->weights[i][j] = this->flat_weights[i * dim2 + j];
             }
         }
     };
@@ -129,6 +121,7 @@ public:
 
 private:
     float weights[output_dim][input_dim];
+    float flat_weights[output_dim * input_dim];
     float bias[output_dim];
 };
 

@@ -2,7 +2,10 @@
 #define dense_h
 
 #include <iostream>
-
+#include <assert.h>
+#include <string>
+#include <fstream>
+#include <vector>
 template <int input_dim, int output_dim>
 class Dense
 {
@@ -44,6 +47,71 @@ public:
         for (int i = 0; i < output_dim; i++)
         {
             this->bias[i] = new_bias[i];
+        }
+    };
+
+    // Overloading
+    void setBias(std::string filename)
+    {
+        std::ifstream infile(filename, std::ios::binary);
+        if (!infile)
+        {
+            std::cout << "Error opening file!" << std::endl;
+            return;
+        }
+        // Read dimensions
+        int dim1;
+        infile.read(reinterpret_cast<char *>(&dim1), sizeof(int));
+
+        // Sanity Check
+        assert(dim1 == output_dim);
+
+        // Calculate total size
+        int total_size = dim1;
+
+        // Read flattened array
+        std::vector<float> flat_array(total_size);
+        infile.read(reinterpret_cast<char *>(flat_array.data()), total_size * sizeof(float));
+        infile.close();
+
+        for (int i = 0; i < dim1; ++i)
+        {
+            this->bias[i] = flat_array[i];
+        }
+    };
+
+    // Overloading
+    void setWeights(std::string filename)
+    {
+        std::ifstream infile(filename, std::ios::binary);
+        if (!infile)
+        {
+            std::cout << "Error opening file!" << std::endl;
+            return;
+        }
+        // Read dimensions
+        int dim1, dim2;
+        infile.read(reinterpret_cast<char *>(&dim1), sizeof(int));
+        infile.read(reinterpret_cast<char *>(&dim2), sizeof(int));
+
+        // Sanity Check
+        assert(dim1 == output_dim);
+        assert(dim2 == input_dim);
+
+        // Calculate total size
+        int total_size = dim1 * dim2;
+
+        // Read flattened array
+        std::vector<float> flat_array(total_size);
+        infile.read(reinterpret_cast<char *>(flat_array.data()), total_size * sizeof(float));
+        infile.close();
+
+        for (int i = 0; i < dim1; ++i)
+        {
+            for (int j = 0; j < dim2; ++j)
+            {
+                this->weights[i][j] = flat_array[i * dim2 + j];
+            }
         }
     };
 

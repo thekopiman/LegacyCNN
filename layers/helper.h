@@ -28,6 +28,21 @@ public:
             }
         }
     };
+    template <size_t rows>
+    static void Softmax(float (&input)[rows])
+    {
+        for (int i = 0; i < rows; i++)
+        {
+            input[i] = (float)exp((double)input[i]);
+        }
+
+        float sumAll = Sum(input);
+
+        for (int i = 0; i < rows; i++)
+        {
+            input[i] /= sumAll;
+        }
+    };
 
     template <size_t rows, size_t cols>
     static float Sum(float (&input)[rows][cols])
@@ -39,6 +54,17 @@ public:
             {
                 total += input[i][j];
             }
+        }
+        return total;
+    };
+
+    template <size_t rows>
+    static float Sum(float (&input)[rows])
+    {
+        float total = 0.0f;
+        for (int i = 0; i < rows; i++)
+        {
+            total += input[i];
         }
         return total;
     };

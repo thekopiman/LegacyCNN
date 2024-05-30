@@ -1,6 +1,11 @@
 #ifndef conv1d_h
 #define conv1d_h
 
+#include <fstream>
+#include <assert.h>
+#include <string>
+#include <iostream>
+
 // out_dim = (input_width + 2*pad - dilation*(kernal - 1) - 1)/stride + 1
 template <int kernal, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim>
 class Conv1d
@@ -59,6 +64,108 @@ public:
 			this->bias[i] = new_bias[i];
 		}
 	};
+
+	// Overloading from filename
+	void setWeights(std::string filename)
+	{
+		std::ifstream infile(filename, std::ios::binary);
+		if (!infile)
+		{
+			std::cout << "Error opening file!" << std::endl;
+			return;
+		}
+		// Read dimensions
+		int dim1, dim2, dim3;
+		infile.read(reinterpret_cast<char *>(&dim1), sizeof(int));
+		infile.read(reinterpret_cast<char *>(&dim2), sizeof(int));
+		infile.read(reinterpret_cast<char *>(&dim3), sizeof(int));
+
+		// Sanity Check
+		assert(dim1 == channel_out);
+		assert(dim2 == channel_in);
+		assert(dim3 == kernal);
+
+		// Calculate total size
+		int total_size = dim1 * dim2 * dim3;
+
+		// Read flattened array
+		// std::vector<float> flat_array(total_size);
+		// infile.read(reinterpret_cast<char *>(flat_array.data()), total_size * sizeof(float));
+		infile.read(reinterpret_cast<char *>(flat_matrix), total_size * sizeof(float));
+		infile.close();
+
+		for (int i = 0; i < dim1; ++i)
+		{
+			for (int j = 0; j < dim2; ++j)
+			{
+				for (int k = 0; k < dim3; ++k)
+				{
+					// this->matrix[i][j][k * dilation] = flat_array[i * dim2 * dim3 + j * dim3 + k];
+					this->matrix[i][j][k * dilation] = flat_matrix[i * dim2 * dim3 + j * dim3 + k];
+				}
+			}
+		}
+
+		// Output to verify correctness
+		// std::cout << "Read 3D array dimensions: (" << dim1 << ", " << dim2 << ", " << dim3 << ")\n";
+		// for (int i = 0; i < dim1; ++i)
+		// {
+		// 	for (int j = 0; j < dim2; ++j)
+		// 	{
+		// 		for (int k = 0; k < dim3; ++k)
+		// 		{
+		// 			std::cout << array_3d[i][j][k] << " ";
+		// 		}
+		// 		std::cout << std::endl;
+		// 	}
+		// 	std::cout << std::endl;
+		// }
+	}
+
+	// Overloading from filename
+	void setBias(std::string filename)
+	{
+		std::ifstream infile(filename, std::ios::binary);
+		if (!infile)
+		{
+			std::cout << "Error opening file!" << std::endl;
+			return;
+		}
+		// Read dimensions
+		int dim1;
+		infile.read(reinterpret_cast<char *>(&dim1), sizeof(int));
+
+		// Sanity Check
+		assert(dim1 == channel_out);
+
+		// Calculate total size
+		int total_size = dim1;
+
+		// Read flattened array
+		std::vector<float> flat_array(total_size);
+		infile.read(reinterpret_cast<char *>(flat_array.data()), total_size * sizeof(float));
+		infile.close();
+
+		for (int i = 0; i < dim1; ++i)
+		{
+			this->bias[i] = flat_array[i];
+		}
+
+		// Output to verify correctness
+		// std::cout << "Read 3D array dimensions: (" << dim1 << ", " << dim2 << ", " << dim3 << ")\n";
+		// for (int i = 0; i < dim1; ++i)
+		// {
+		// 	for (int j = 0; j < dim2; ++j)
+		// 	{
+		// 		for (int k = 0; k < dim3; ++k)
+		// 		{
+		// 			std::cout << array_3d[i][j][k] << " ";
+		// 		}
+		// 		std::cout << std::endl;
+		// 	}
+		// 	std::cout << std::endl;
+		// }
+	}
 	void getOutput(float (&input)[channel_in][input_width], float (&output)[channel_out][out_dim])
 	{
 		// Here we assume that the dim of input/output is correct -> else it will lead to errors
@@ -96,6 +203,7 @@ public:
 
 private:
 	float matrix[channel_out][channel_in][(kernal - 1) * dilation + 1];
+	float flat_matrix[channel_out * channel_in * ((kernal - 1) * dilation + 1)];
 	float bias[channel_out];
 	int empty_input[channel_in][input_width + 2 * pad];
 };

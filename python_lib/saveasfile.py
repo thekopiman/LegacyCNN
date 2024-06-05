@@ -9,6 +9,9 @@ class SaveAsByte:
         self.layername = layername
         self.dirpath = dirpath
 
+        if not os.path.exists(dirpath):
+            os.makedirs(dirpath)
+
     def saveBias(self, transpose=False):
         bias = self.layer.bias.cpu().detach().numpy()
         if transpose:

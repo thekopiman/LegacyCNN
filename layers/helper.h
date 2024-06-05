@@ -33,7 +33,7 @@ public:
     {
         for (int i = 0; i < rows; i++)
         {
-            input[i] = (float)exp((double)input[i]);
+            input[i] = (float)exp(input[i]);
         }
 
         float sumAll = Sum(input);

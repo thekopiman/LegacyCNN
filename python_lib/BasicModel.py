@@ -63,12 +63,16 @@ class BasicModel(torch.nn.Module):
         y = self.layer0(x)
         print(y)
         y = self.layer1(y)
+        print(y)
         y = self.layer2(y)
+        print(y)
         y = self.layer3(y)
+        print(y)
         y = self.layer4(y)
-
+        print(y)
         ## Final Layer
         y = self.final(y)
+        print(y)
 
         z = F.softmax(y)
         return z

@@ -9,12 +9,12 @@
 // Conv1d
 // ReLU
 // BatchNorm
-template <int kernal, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim>
+template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim>
 class BasicCNNBlock
 {
 public:
     // Set weights directly
-    void setWeights_layer0(float (&new_weights)[channel_out][channel_in][kernal])
+    void setWeights_layer0(float (&new_weights)[channel_out][channel_in][kernel])
     {
         layer0.setWeights(new_weights);
     };
@@ -32,13 +32,13 @@ public:
     };
 
     // Set weights from path via overloading
-    void setWeights_layer0(std::string pathname)
+    void setWeights_layer0(std::string pathname, bool displayWeights)
     {
-        layer0.setWeights(pathname);
+        layer0.setWeights(pathname, displayWeights);
     };
-    void setBias_layer0(std::string pathname)
+    void setBias_layer0(std::string pathname, bool displayBias)
     {
-        layer0.setBias(pathname);
+        layer0.setBias(pathname, displayBias);
     };
     void setGamma_layer1(std::string pathname)
     {
@@ -58,7 +58,7 @@ public:
     }
 
 private:
-    Conv1d<kernal, stride, channel_in, channel_out, pad, dilation, input_width, out_dim> layer0;
+    Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim> layer0;
     BatchNorm1d<channel_out, out_dim> layer1;
 };
 

@@ -74,7 +74,7 @@ public:
     };
 
     // Overloading
-    void setWeights(std::string filename)
+    void setWeights(std::string filename, bool displayWeights)
     {
         std::ifstream infile(filename, std::ios::binary);
         if (!infile)
@@ -105,6 +105,19 @@ public:
                 this->weights[i][j] = this->flat_weights[i * dim2 + j];
             }
         }
+
+        if (displayWeights)
+        {
+            for (int i = 0; i < dim1; i++)
+            {
+                for (int j = 0; j < dim2; j++)
+                {
+                    std::cout << this->weights[i][j] << " ";
+                }
+                std::cout << std::endl;
+                std::cout << std::endl;
+            }
+        }
     };
 
     void getOutput(float (&input)[input_dim], float (&output)[output_dim])
@@ -114,7 +127,7 @@ public:
             output[i] = this->bias[i];
             for (int j = 0; j < input_dim; j++)
             {
-                output[i] += this->weights[j][i] * input[j];
+                output[i] += this->weights[i][j] * input[j];
             }
         }
     }

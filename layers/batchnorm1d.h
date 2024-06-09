@@ -8,7 +8,7 @@
 #include <iostream>
 
 // https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm1d.html
-template <int channel, int width>
+template <int channel, int width, typename T>
 class BatchNorm1d
 {
 public:
@@ -17,28 +17,28 @@ public:
         // Initialise gamma as 1
         for (int i = 0; i < channel; i++)
         {
-            this->gamma[i] = 1.0f;
+            this->gamma[i] = 1.0;
         }
 
         // Initialise beta as 0
         for (int i = 0; i < channel; i++)
         {
-            this->beta[i] = 0.0f;
+            this->beta[i] = 0.0;
         }
 
         // Initialise mean as 0
         for (int i = 0; i < channel; i++)
         {
-            this->mean[i] = 0.0f;
+            this->mean[i] = 0.0;
         }
 
         // Initialise variance as 0
         for (int i = 0; i < channel; i++)
         {
-            this->variance[i] = 0.0f;
+            this->variance[i] = 0.0;
         }
     };
-    void setGamma(float (&new_gamma)[channel])
+    void setGamma(T (&new_gamma)[channel])
     {
         // Initialise gamma as 1
         for (int i = 0; i < channel; i++)
@@ -46,7 +46,7 @@ public:
             this->gamma[i] = new_gamma[i];
         }
     };
-    void setBeta(float (&new_beta)[channel])
+    void setBeta(T (&new_beta)[channel])
     {
         // Initialise beta as 1
         for (int i = 0; i < channel; i++)
@@ -75,8 +75,12 @@ public:
         int total_size = dim1;
 
         // Read flattened array
-        infile.read(reinterpret_cast<char *>(this->gamma), total_size * sizeof(float));
+        infile.read(reinterpret_cast<char *>(this->temp_gamma), total_size * sizeof(float));
         infile.close();
+        for (int i = 0; i < channel; i++)
+        {
+            this->gamma[i] = (T)this->temp_gamma[i];
+        }
     };
 
     // Overloading
@@ -99,15 +103,19 @@ public:
         int total_size = dim1;
 
         // Read flattened array
-        infile.read(reinterpret_cast<char *>(this->beta), total_size * sizeof(float));
+        infile.read(reinterpret_cast<char *>(this->temp_beta), total_size * sizeof(float));
         infile.close();
+        for (int i = 0; i < channel; i++)
+        {
+            this->beta[i] = (T)this->temp_beta[i];
+        }
     };
 
-    void setEps(float var)
+    void setEps(T var)
     {
         this->eps = var;
     };
-    void getOutput(float (&input)[channel][width], float (&output)[channel][width])
+    void getOutput(T (&input)[channel][width], T (&output)[channel][width])
     {
         // Calculate mean E(X) first
         for (int c = 0; c < channel; c++)
@@ -140,11 +148,13 @@ public:
     };
 
 private:
-    float gamma[channel];
-    float beta[channel];
-    float mean[channel];
-    float variance[channel];
-    float eps = 1e-5;
+    T gamma[channel];
+    T beta[channel];
+    float temp_gamma[channel];
+    float temp_beta[channel];
+    T mean[channel];
+    T variance[channel];
+    T eps = 1e-5;
 };
 
 #endif

@@ -7,7 +7,7 @@
 #include <iostream>
 
 // out_dim = (input_width + 2*pad - dilation*(kernel - 1) - 1)/stride + 1
-template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim>
+template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
 class Conv1d
 {
 public:
@@ -21,7 +21,7 @@ public:
 			{
 				for (int k = 0; k < kernel; ++k)
 				{
-					this->matrix[i][j][k] = 1.0f; // Initialize with 0.0f
+					this->matrix[i][j][k] = 0.0; // Initialize with 0.0f
 				}
 			}
 		}
@@ -42,7 +42,7 @@ public:
 			}
 		}
 	};
-	void setWeights(float (&new_weights)[channel_out][channel_in][kernel])
+	void setWeights(T (&new_weights)[channel_out][channel_in][kernel])
 	{
 		// New weights are being set
 		for (int i = 0; i < channel_out; i++)
@@ -56,7 +56,7 @@ public:
 			}
 		}
 	};
-	void setBias(float (&new_bias)[channel_out])
+	void setBias(T (&new_bias)[channel_out])
 	{
 		// New bias are being set
 		for (int i = 0; i < channel_out; i++)
@@ -98,7 +98,7 @@ public:
 			{
 				for (int k = 0; k < dim3; ++k)
 				{
-					this->matrix[i][j][k] = this->flat_matrix[i * dim2 * dim3 + j * dim3 + k];
+					this->matrix[i][j][k] = (T)this->flat_matrix[i * dim2 * dim3 + j * dim3 + k];
 				}
 			}
 		}
@@ -142,8 +142,13 @@ public:
 		int total_size = dim1;
 
 		// Read flattened array
-		infile.read(reinterpret_cast<char *>(this->bias), total_size * sizeof(float));
+		infile.read(reinterpret_cast<char *>(this->flat_bias), total_size * sizeof(float));
 		infile.close();
+
+		for (int i = 0; i < dim1; ++i)
+		{
+			this->bias[i] = (T)this->flat_bias[i];
+		}
 
 		// Output to verify correctness
 		if (displayBias)
@@ -156,7 +161,7 @@ public:
 			std::cout << std::endl;
 		}
 	}
-	void padInput(float (&input)[channel_in][input_width])
+	void padInput(T (&input)[channel_in][input_width])
 	{
 		for (int i = 0; i < channel_in; i++)
 		{
@@ -166,7 +171,7 @@ public:
 			}
 		}
 	}
-	void getOutput(float (&input)[channel_in][input_width], float (&output)[channel_out][out_dim])
+	void getOutput(T (&input)[channel_in][input_width], T (&output)[channel_out][out_dim])
 	{
 		// Here we assume that the dim of input/output is correct -> else it will lead to errors
 
@@ -178,25 +183,33 @@ public:
 		{
 			for (int i = 0; i < out_dim; i++)
 			{
+				// std::cout << "Output coordinate: (" << j << ", " << i << ")" << std::endl;
+
 				output[j][i] = this->bias[j];
+
+				// std::cout << this->bias[j] << "+\n";
 
 				// Individual computation
 				for (int b = 0; b < channel_in; b++)
 				{
 					for (int k = 0; k < kernel; k++)
 					{
+						// std::cout << this->matrix[j][b][k] << "*" << this->empty_input[b][i * stride + k * dilation] << std::endl;
 						output[j][i] += this->matrix[j][b][k] * this->empty_input[b][i * stride + k * dilation];
 					}
+					// std::cout << std::endl;
 				}
+				// std::cout << "Final output: " << output[j][i] << std::endl;
 			}
 		}
 	};
 
 private:
-	float matrix[channel_out][channel_in][kernel];
+	T matrix[channel_out][channel_in][kernel];
 	float flat_matrix[channel_out * channel_in * kernel];
-	float bias[channel_out];
-	float empty_input[channel_in][input_width + 2 * pad];
+	T bias[channel_out];
+	float flat_bias[channel_out];
+	T empty_input[channel_in][input_width + 2 * pad];
 };
 
 #endif

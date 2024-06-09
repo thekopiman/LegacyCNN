@@ -5,7 +5,7 @@
 #include <assert.h>
 #include <string>
 #include <fstream>
-template <int input_dim, int output_dim>
+template <int input_dim, int output_dim, typename T>
 class Dense
 {
 public:
@@ -16,18 +16,18 @@ public:
         {
             for (int j = 0; j < output_dim; j++)
             {
-                weights[i][j] = 1.0f;
+                weights[i][j] = 0.0;
             }
         }
 
         // Initialize the bias with 0
         for (int i = 0; i < output_dim; i++)
         {
-            bias[i] = 0.0f;
+            bias[i] = 0.0;
         }
     };
 
-    void setWeights(float (&new_weights)[input_dim][output_dim])
+    void setWeights(T (&new_weights)[input_dim][output_dim])
     {
         // New weights are being set
         for (int i = 0; i < input_dim; i++)
@@ -40,7 +40,7 @@ public:
         }
     };
 
-    void setBias(float (&new_bias)[output_dim])
+    void setBias(T (&new_bias)[output_dim])
     {
         // New bias are being set
         for (int i = 0; i < output_dim; i++)
@@ -69,8 +69,13 @@ public:
         int total_size = dim1;
 
         // Read flattened array
-        infile.read(reinterpret_cast<char *>(this->bias), total_size * sizeof(float));
+        infile.read(reinterpret_cast<char *>(this->flat_bias), total_size * sizeof(float));
         infile.close();
+
+        for (int i = 0; i < dim1; i++)
+        {
+            this->bias[i] = (T)this->flat_bias[i];
+        }
     };
 
     // Overloading
@@ -102,7 +107,7 @@ public:
         {
             for (int j = 0; j < dim2; ++j)
             {
-                this->weights[i][j] = this->flat_weights[i * dim2 + j];
+                this->weights[i][j] = (T)this->flat_weights[i * dim2 + j];
             }
         }
 
@@ -120,7 +125,7 @@ public:
         }
     };
 
-    void getOutput(float (&input)[input_dim], float (&output)[output_dim])
+    void getOutput(T (&input)[input_dim], T (&output)[output_dim])
     {
         for (int i = 0; i < output_dim; i++)
         {
@@ -133,9 +138,10 @@ public:
     }
 
 private:
-    float weights[output_dim][input_dim];
+    T weights[output_dim][input_dim];
     float flat_weights[output_dim * input_dim];
-    float bias[output_dim];
+    T bias[output_dim];
+    float flat_bias[output_dim];
 };
 
 #endif

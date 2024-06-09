@@ -61,18 +61,18 @@ class BasicModel(torch.nn.Module):
     def forward(self, x):
         # x = self.input_layer(x)
         y = self.layer0(x)
-        print(y)
+        print("layer0", y)
         y = self.layer1(y)
-        print(y)
+        print("layer1", y)
         y = self.layer2(y)
-        print(y)
+        print("layer2", y)
         y = self.layer3(y)
-        print(y)
+        print("layer3", y)
         y = self.layer4(y)
-        print(y)
+        print("layer4", y)
         ## Final Layer
         y = self.final(y)
-        print(y)
+        print("fc", y)
 
         z = F.softmax(y)
         return z

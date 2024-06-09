@@ -1,24 +1,26 @@
 #ifndef softmax_H
 #define softmax_H
 
+#include <string>
+#include <fstream>
 #include <cmath>
 #include <iostream>
 
 class Helper
 {
 public:
-    template <size_t rows, size_t cols>
-    static void Softmax(float (&input)[rows][cols])
+    template <size_t rows, size_t cols, typename T>
+    static void Softmax(T (&input)[rows][cols])
     {
         for (int i = 0; i < rows; i++)
         {
             for (int j = 0; j < cols; j++)
             {
-                input[i][j] = (float)exp((double)input[i][j]);
+                input[i][j] = (T)exp((double)input[i][j]);
             }
         }
 
-        float sumAll = Sum(input);
+        T sumAll = Sum(input);
 
         for (int i = 0; i < rows; i++)
         {
@@ -28,12 +30,12 @@ public:
             }
         }
     };
-    template <size_t rows>
-    static void Softmax(float (&input)[rows])
+    template <size_t rows, typename T>
+    static void Softmax(T (&input)[rows])
     {
         for (int i = 0; i < rows; i++)
         {
-            input[i] = (float)exp(input[i]);
+            input[i] = (T)exp((double)input[i]);
         }
 
         float sumAll = Sum(input);
@@ -44,10 +46,10 @@ public:
         }
     };
 
-    template <size_t rows, size_t cols>
-    static float Sum(float (&input)[rows][cols])
+    template <size_t rows, size_t cols, typename T>
+    static T Sum(T (&input)[rows][cols])
     {
-        float total = 0.0f;
+        T total = 0.0f;
         for (int i = 0; i < rows; i++)
         {
             for (int j = 0; j < cols; j++)
@@ -58,10 +60,10 @@ public:
         return total;
     };
 
-    template <size_t rows>
-    static float Sum(float (&input)[rows])
+    template <size_t rows, typename T>
+    static T Sum(T (&input)[rows])
     {
-        float total = 0.0f;
+        T total = 0.0;
         for (int i = 0; i < rows; i++)
         {
             total += input[i];
@@ -69,8 +71,8 @@ public:
         return total;
     };
 
-    template <size_t rows, size_t cols>
-    static float Flatten(float (&input)[rows][cols], float (&output)[rows * cols])
+    template <size_t rows, size_t cols, typename T>
+    static T Flatten(T (&input)[rows][cols], T (&output)[rows * cols])
     {
         int index = 0;
         for (size_t i = 0; i < rows; ++i)
@@ -82,8 +84,8 @@ public:
         }
     }
 
-    template <size_t rows, size_t cols>
-    static void ReLU(float (&input)[rows][cols])
+    template <size_t rows, size_t cols, typename T>
+    static void ReLU(T (&input)[rows][cols])
     {
         for (int i = 0; i < rows; i++)
         {
@@ -93,6 +95,42 @@ public:
                 {
                     input[i][j] = 0;
                 }
+            }
+        }
+    }
+
+    template <size_t rows, size_t cols, typename T>
+    static void readInputs(std::string filename, T (&inputs)[rows][cols])
+    {
+        float flat_matrix[rows * cols];
+
+        std::ifstream infile(filename, std::ios::binary);
+        if (!infile)
+        {
+            std::cout << "Error opening file!" << std::endl;
+            return;
+        }
+        // Read dimensions
+        int dim1, dim2;
+        infile.read(reinterpret_cast<char *>(&dim1), sizeof(int));
+        infile.read(reinterpret_cast<char *>(&dim2), sizeof(int));
+
+        // Sanity Check
+        assert(dim1 == rows);
+        assert(dim2 == cols);
+
+        // Calculate total size
+        int total_size = dim1 * dim2;
+
+        // Read flattened array
+        infile.read(reinterpret_cast<char *>(flat_matrix), total_size * sizeof(float));
+        infile.close();
+
+        for (int i = 0; i < dim1; ++i)
+        {
+            for (int j = 0; j < dim2; ++j)
+            {
+                inputs[i][j] = (T)flat_matrix[i * dim2 + j];
             }
         }
     }

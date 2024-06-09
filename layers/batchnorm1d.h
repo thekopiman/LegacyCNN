@@ -75,12 +75,8 @@ public:
         int total_size = dim1;
 
         // Read flattened array
-        infile.read(reinterpret_cast<char *>(this->temp_gamma), total_size * sizeof(float));
+        infile.read(reinterpret_cast<char *>(this->gamma), total_size * sizeof(T));
         infile.close();
-        for (int i = 0; i < channel; i++)
-        {
-            this->gamma[i] = (T)this->temp_gamma[i];
-        }
     };
 
     // Overloading
@@ -103,12 +99,8 @@ public:
         int total_size = dim1;
 
         // Read flattened array
-        infile.read(reinterpret_cast<char *>(this->temp_beta), total_size * sizeof(float));
+        infile.read(reinterpret_cast<char *>(this->beta), total_size * sizeof(T));
         infile.close();
-        for (int i = 0; i < channel; i++)
-        {
-            this->beta[i] = (T)this->temp_beta[i];
-        }
     };
 
     void setEps(T var)
@@ -150,8 +142,6 @@ public:
 private:
     T gamma[channel];
     T beta[channel];
-    float temp_gamma[channel];
-    float temp_beta[channel];
     T mean[channel];
     T variance[channel];
     T eps = 1e-5;

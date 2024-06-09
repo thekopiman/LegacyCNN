@@ -69,13 +69,8 @@ public:
         int total_size = dim1;
 
         // Read flattened array
-        infile.read(reinterpret_cast<char *>(this->flat_bias), total_size * sizeof(float));
+        infile.read(reinterpret_cast<char *>(this->bias), total_size * sizeof(T));
         infile.close();
-
-        for (int i = 0; i < dim1; i++)
-        {
-            this->bias[i] = (T)this->flat_bias[i];
-        }
     };
 
     // Overloading
@@ -100,7 +95,7 @@ public:
         int total_size = dim1 * dim2;
 
         // Read flattened array
-        infile.read(reinterpret_cast<char *>(this->flat_weights), total_size * sizeof(float));
+        infile.read(reinterpret_cast<char *>(this->flat_weights), total_size * sizeof(T));
         infile.close();
 
         for (int i = 0; i < dim1; ++i)
@@ -139,7 +134,7 @@ public:
 
 private:
     T weights[output_dim][input_dim];
-    float flat_weights[output_dim * input_dim];
+    T flat_weights[output_dim * input_dim];
     T bias[output_dim];
     float flat_bias[output_dim];
 };

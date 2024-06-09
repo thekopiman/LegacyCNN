@@ -82,28 +82,28 @@ int main()
     // // Model.forward(input2, y2);
     // std::cout << "Completed Running Model" << std::endl;
 
-    BasicCNNBlock<3, 1, 2, 4, 0, 1, 16, 14, double> Block0;
+    BasicCNNBlock<3, 1, 2, 4, 0, 1, 16, 14, float> Block0;
 
-    double x0[4][14];
-    BasicCNNBlock<3, 1, 4, 4, 0, 1, 14, 12, double> Block1;
+    float x0[4][14];
+    BasicCNNBlock<3, 1, 4, 4, 0, 1, 14, 12, float> Block1;
 
-    double x1[4][12];
-    BasicCNNBlock<3, 1, 4, 4, 0, 1, 12, 10, double> Block2;
+    float x1[4][12];
+    BasicCNNBlock<3, 1, 4, 4, 0, 1, 12, 10, float> Block2;
 
-    double x2[4][10];
-    BasicCNNBlock<3, 1, 4, 4, 0, 1, 10, 8, double> Block3;
+    float x2[4][10];
+    BasicCNNBlock<3, 1, 4, 4, 0, 1, 10, 8, float> Block3;
 
-    double x3[4][8];
-    BasicCNNBlock<3, 1, 4, 4, 0, 1, 8, 6, double> Block4;
+    float x3[4][8];
+    BasicCNNBlock<3, 1, 4, 4, 0, 1, 8, 6, float> Block4;
 
-    double x4[4][6];
+    float x4[4][6];
     // Flatten()
-    double flatten_x[24];
-    Dense<24, 6, double> fc;
+    float flatten_x[24];
+    Dense<24, 6, float> fc;
 
-    double input2[2][16];
+    float input2[2][16];
     Helper::readInputs("BasicModelWeights\\input.bin", input2);
-    double y[6];
+    float y[6];
 
     Block0.setBias_layer0("BasicModelWeights\\layer0_conv_bias.bin", true);
     Block0.setWeights_layer0("BasicModelWeights\\layer0_conv_weights.bin", true);

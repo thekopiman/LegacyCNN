@@ -123,7 +123,7 @@ public:
         int total_size = dim1 * dim2;
 
         // Read flattened array
-        infile.read(reinterpret_cast<char *>(flat_matrix), total_size * sizeof(float));
+        infile.read(reinterpret_cast<char *>(flat_matrix), total_size * sizeof(T));
         infile.close();
 
         for (int i = 0; i < dim1; ++i)

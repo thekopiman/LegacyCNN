@@ -21,7 +21,7 @@ public:
 			{
 				for (int k = 0; k < kernel; ++k)
 				{
-					this->matrix[i][j][k] = 0.0; // Initialize with 0.0f
+					this->matrix[i][j][k] = 0.0; // Initialize with 0.0
 				}
 			}
 		}
@@ -29,7 +29,7 @@ public:
 		// Initialize bias to 0
 		for (int i = 0; i < channel_out; ++i)
 		{
-			this->bias[i] = 0.0f; // Initialize with 0.0f
+			this->bias[i] = 0.0; // Initialize with 0.0
 		}
 
 		// Initialize empty_input to 0
@@ -38,7 +38,7 @@ public:
 			for (int j = 0; j < input_width; ++j)
 			{
 
-				this->empty_input[i][j] = 0.0f; // Initialize with 0.0f
+				this->empty_input[i][j] = 0.0; // Initialize with 0.0
 			}
 		}
 	};
@@ -89,7 +89,7 @@ public:
 		int total_size = dim1 * dim2 * dim3;
 
 		// Read flattened array
-		infile.read(reinterpret_cast<char *>(this->flat_matrix), total_size * sizeof(float));
+		infile.read(reinterpret_cast<char *>(this->flat_matrix), total_size * sizeof(T));
 		infile.close();
 
 		for (int i = 0; i < dim1; ++i)
@@ -142,13 +142,8 @@ public:
 		int total_size = dim1;
 
 		// Read flattened array
-		infile.read(reinterpret_cast<char *>(this->flat_bias), total_size * sizeof(float));
+		infile.read(reinterpret_cast<char *>(this->bias), total_size * sizeof(T));
 		infile.close();
-
-		for (int i = 0; i < dim1; ++i)
-		{
-			this->bias[i] = (T)this->flat_bias[i];
-		}
 
 		// Output to verify correctness
 		if (displayBias)
@@ -206,9 +201,8 @@ public:
 
 private:
 	T matrix[channel_out][channel_in][kernel];
-	float flat_matrix[channel_out * channel_in * kernel];
+	T flat_matrix[channel_out * channel_in * kernel];
 	T bias[channel_out];
-	float flat_bias[channel_out];
 	T empty_input[channel_in][input_width + 2 * pad];
 };
 

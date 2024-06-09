@@ -83,19 +83,14 @@ int main()
     // std::cout << "Completed Running Model" << std::endl;
 
     BasicCNNBlock<3, 1, 2, 4, 0, 1, 16, 14, float> Block0;
-
     float x0[4][14];
     BasicCNNBlock<3, 1, 4, 4, 0, 1, 14, 12, float> Block1;
-
     float x1[4][12];
     BasicCNNBlock<3, 1, 4, 4, 0, 1, 12, 10, float> Block2;
-
     float x2[4][10];
     BasicCNNBlock<3, 1, 4, 4, 0, 1, 10, 8, float> Block3;
-
     float x3[4][8];
     BasicCNNBlock<3, 1, 4, 4, 0, 1, 8, 6, float> Block4;
-
     float x4[4][6];
     // Flatten()
     float flatten_x[24];
@@ -105,8 +100,8 @@ int main()
     Helper::readInputs("BasicModelWeights\\input.bin", input2);
     float y[6];
 
-    Block0.setBias_layer0("BasicModelWeights\\layer0_conv_bias.bin", true);
-    Block0.setWeights_layer0("BasicModelWeights\\layer0_conv_weights.bin", true);
+    Block0.setBias_layer0("BasicModelWeights\\layer0_conv_bias.bin", false);
+    Block0.setWeights_layer0("BasicModelWeights\\layer0_conv_weights.bin", false);
     Block0.setGamma_layer1("BasicModelWeights\\layer0_bn_weights.bin");
     Block0.setBeta_layer1("BasicModelWeights\\layer0_bn_bias.bin");
     Block0.getOutput(input2, x0);

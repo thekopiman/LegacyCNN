@@ -13,6 +13,11 @@ template <int kernel, int stride, int channel_in, int channel_out, int pad, int 
 class BasicCNNBlock
 {
 public:
+    BasicCNNBlock()
+    {
+        std::cout << "BasicCNNBlock initialised" << std::endl;
+    }
+
     // Set weights directly
     void setWeights_layer0(T (&new_weights)[channel_out][channel_in][kernel])
     {
@@ -55,6 +60,12 @@ public:
         layer0.getOutput(input, output);
         Helper::ReLU<channel_out, out_dim, T>(output);
         layer1.getOutput(output, output);
+    }
+
+    ~BasicCNNBlock()
+    {
+        delete (&layer0);
+        delete (&layer1);
     }
 
 private:

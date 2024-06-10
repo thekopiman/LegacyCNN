@@ -11,20 +11,23 @@ class Dense
 public:
     Dense()
     {
+
         // Initialize the weights with 0
-        for (int i = 0; i < input_dim; i++)
+        for (int i = 0; i < output_dim; i++)
         {
-            for (int j = 0; j < output_dim; j++)
+            for (int j = 0; j < input_dim; j++)
             {
-                weights[i][j] = 0.0;
+                this->weights[i][j] = 0.0;
             }
         }
 
         // Initialize the bias with 0
         for (int i = 0; i < output_dim; i++)
         {
-            bias[i] = 0.0;
+            this->bias[i] = 0.0;
         }
+
+        std::cout << "Dense initialised" << std::endl;
     };
 
     void setWeights(T (&new_weights)[input_dim][output_dim])

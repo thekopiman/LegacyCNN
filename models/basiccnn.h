@@ -11,8 +11,9 @@ class BasicCNNModel
 {
 public:
     BasicCNNModel();
+    ~BasicCNNModel();
     void forward(float (&input)[2][16], float (&y)[6]);
-    // void setWeights();
+    void loadweights();
 
 private:
     BasicCNNBlock<3, 1, 2, 4, 0, 1, 16, 14, float> Block0;
@@ -29,5 +30,7 @@ private:
     float flatten_x[24];
     Dense<24, 6, float> fc;
 };
+
+#include "basiccnn.cpp"
 
 #endif

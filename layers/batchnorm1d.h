@@ -138,6 +138,14 @@ public:
             }
         }
     };
+    ~BatchNorm1d()
+    {
+        delete (&gamma);
+        delete (&beta);
+        delete (&mean);
+        delete (&variance);
+        delete (&eps);
+    }
 
 private:
     T gamma[channel];

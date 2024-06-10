@@ -35,7 +35,7 @@ public:
 		// Initialize empty_input to 0
 		for (int i = 0; i < channel_in; ++i)
 		{
-			for (int j = 0; j < input_width; ++j)
+			for (int j = 0; j < input_width + 2 * pad; ++j)
 			{
 
 				this->empty_input[i][j] = 0.0; // Initialize with 0.0
@@ -198,6 +198,14 @@ public:
 			}
 		}
 	};
+
+	~Conv1d()
+	{
+		delete (&matrix);
+		delete (&flat_matrix);
+		delete (&bias);
+		delete (&empty_input);
+	}
 
 private:
 	T matrix[channel_out][channel_in][kernel];

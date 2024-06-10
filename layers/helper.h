@@ -5,6 +5,7 @@
 #include <fstream>
 #include <cmath>
 #include <iostream>
+#include <assert.h>
 
 class Helper
 {

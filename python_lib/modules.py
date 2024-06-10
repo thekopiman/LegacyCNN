@@ -29,7 +29,6 @@ class BatchNorm1d(_BatchNorm1d):
         super().__init__(skip_transpose=True, *args, **kwargs)
 
 
-        
 class TDNNBlock(nn.Module):
     """An implementation of TDNN.
 
@@ -112,9 +111,7 @@ class Res2NetBlock(torch.nn.Module):
     torch.Size([8, 120, 64])
     """
 
-    def __init__(
-        self, in_channels, out_channels, scale=8, kernel_size=3, dilation=1
-    ):
+    def __init__(self, in_channels, out_channels, scale=8, kernel_size=3, dilation=1):
         super().__init__()
         assert in_channels % scale == 0
         assert out_channels % scale == 0
@@ -257,9 +254,7 @@ class AttentiveStatisticsPooling(nn.Module):
 
         def _compute_statistics(x, m, dim=2, eps=self.eps):
             mean = (m * x).sum(dim)
-            std = torch.sqrt(
-                (m * (x - mean.unsqueeze(dim)).pow(2)).sum(dim).clamp(eps)
-            )
+            std = torch.sqrt((m * (x - mean.unsqueeze(dim)).pow(2)).sum(dim).clamp(eps))
             return mean, std
 
         if lengths is None:
@@ -446,8 +441,7 @@ class ECAPA_TDNN(torch.nn.Module):
         assert len(channels) == len(dilations)
         self.channels = channels
         self.blocks = nn.ModuleList()
-    
-        
+
         # The initial TDNN layer
         self.blocks.append(
             TDNNBlock(
@@ -499,12 +493,12 @@ class ECAPA_TDNN(torch.nn.Module):
         #     out_channels=lin_neurons,
         #     kernel_size=1,
         # )
-        
+
         # Final Dense Layer
         self.final = nn.Sequential(
-        nn.Flatten(), nn.Linear(in_features=channels[-1] * 2, out_features=lin_neurons)
-    )
-
+            nn.Flatten(),
+            nn.Linear(in_features=channels[-1] * 2, out_features=lin_neurons),
+        )
 
     def forward(self, x, lengths=None):
         """Returns the embedding vector.

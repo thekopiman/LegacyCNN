@@ -1,8 +1,3 @@
-#include <iostream>
-#include "../layers/conv1d.h"
-#include "../layers/dense.h"
-#include "../layers/helper.h"
-#include "../layers/basiccnnblock.h"
 #include "basiccnn.h"
 
 void BasicCNNModel::forward(float (&input)[2][16], float (&y)[6])
@@ -19,13 +14,13 @@ void BasicCNNModel::forward(float (&input)[2][16], float (&y)[6])
 
     Block4.getOutput(x3, x4);
 
-    Helper::Flatten(x4, flatten_x);
+    MatrixFunctions::Flatten(x4, flatten_x);
 
     fc.getOutput(flatten_x, y);
 
     std::cout << std::endl;
 
-    Helper::Softmax(y);
+    ActivationFunctions::Softmax(y);
 };
 
 BasicCNNModel::BasicCNNModel()

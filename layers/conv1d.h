@@ -65,6 +65,22 @@ public:
 		}
 	};
 
+	// Overloaded - Flat weights
+	void setWeights(T (&new_weights)[channel_out * channel_in * kernel])
+	{
+		// New weights are being set
+		for (int i = 0; i < channel_out; i++)
+		{
+			for (int j = 0; j < channel_in; j++)
+			{
+				for (int k = 0; k < kernel; k++)
+				{
+					this->matrix[i][j][k] = new_weights[i * channel_out * channel_in + j * channel_in + k];
+				}
+			}
+		}
+	};
+
 	// Overloading from filename
 	void setWeights(std::string filename, bool displayWeights)
 	{

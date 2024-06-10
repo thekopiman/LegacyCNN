@@ -1,5 +1,6 @@
 #include <iostream>
 #include "models/basiccnn.h"
+#include "utils/helper.h"
 
 int main()
 {

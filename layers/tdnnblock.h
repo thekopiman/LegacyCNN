@@ -2,7 +2,9 @@
 #define basiccnn_h
 
 #include "conv1d.h"
-#include "helper.h"
+#include "../utils/helper.h"
+#include "../utils/activationfunctions.h"
+#include "../utils/matrixfunctions.h"
 #include "batchnorm1d.h"
 #include <string>
 
@@ -10,12 +12,12 @@
 // ReLU
 // BatchNorm
 template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
-class BasicCNNBlock
+class TDNNBlock
 {
 public:
-    BasicCNNBlock()
+    TDNNBlock()
     {
-        std::cout << "BasicCNNBlock initialised" << std::endl;
+        std::cout << "TDNNBlock initialised" << std::endl;
     }
 
     // Set weights directly
@@ -58,11 +60,11 @@ public:
     void getOutput(T (&input)[channel_in][input_width], T (&output)[channel_out][out_dim])
     {
         layer0.getOutput(input, output);
-        Helper::ReLU<channel_out, out_dim, T>(output);
+        ActivationFunctions::ReLU<channel_out, out_dim, T>(output);
         layer1.getOutput(output, output);
     }
 
-    ~BasicCNNBlock()
+    ~TDNNBlock()
     {
         delete (&layer0);
         delete (&layer1);

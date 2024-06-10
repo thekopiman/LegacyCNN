@@ -21,6 +21,13 @@ def save(self, dirpath=""):
 
 Note: For layers (Sequential blocks) that consist of individual sub-layers, you have to extract them out here.
 
-# C++: Weights loading
+# C++:
 
-Load the weights right before `forward` as memormy replacement occurs for some reason.
+Make sure you load the weights via the `.bin` files before running `forward`.
+
+### Compile & Run as follows
+
+```
+g++ -O2 *.cpp layers/*.h models/*.h -o test
+test
+```

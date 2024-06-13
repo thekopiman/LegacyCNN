@@ -5,9 +5,8 @@
 
 int main()
 {
-    // This layer is statically allocated
+    // The layers are statically allocated
     // Hence all values have to be given. ie. Precomputed beforehand
-    // Refer to Documentation to generate the values using python.
     std::cout << "Running program" << std::endl;
     BasicCNNModel model;
     float input[2][16];

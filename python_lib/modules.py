@@ -29,18 +29,18 @@ class BatchNorm1d(_BatchNorm1d):
         super().__init__(skip_transpose=True, *args, **kwargs)
 
 
-class Cat(torch.cat):
-    """1D Cat - Printing dimensions"""
+# class Cat(torch.cat):
+#     """1D Cat - Printing dimensions"""
 
-    def __init__(self, x, dim):
-        print("Cat | Chunks: ", len(x), end="| ")
-        print("Input: ", x[0].shape, end="| ")
-        print("Final: ", x[-1].shape, end="| ")
+#     def __init__(self, x, dim):
+#         print("Cat | Chunks: ", len(x), end="| ")
+#         print("Input: ", x[0].shape, end="| ")
+#         print("Final: ", x[-1].shape, end="| ")
 
-        original_length = (len(x) - 1) * x[0].shape[-1] + x[-1].shape[-1]
-        print("Slice from", len(x)*x[0].shape[-1], " to ", original_length)
+#         original_length = (len(x) - 1) * x[0].shape[-1] + x[-1].shape[-1]
+#         print("Slice from", len(x)*x[0].shape[-1], " to ", original_length)
 
-        super().__init__(x, dim)
+#         super().__init__(x, dim)
 
 
 class TDNNBlock(nn.Module):
@@ -157,7 +157,7 @@ class Res2NetBlock(torch.nn.Module):
             else:
                 y_i = self.blocks[i - 1](x_i + y_i)
             y.append(y_i)
-        y = Cat(y, dim=1)
+        y = torch.cat(y, dim=1)
         return y
 
 
@@ -287,7 +287,7 @@ class AttentiveStatisticsPooling(nn.Module):
             mean, std = _compute_statistics(x, mask / total)
             mean = mean.unsqueeze(2).repeat(1, 1, L)
             std = std.unsqueeze(2).repeat(1, 1, L)
-            attn = Cat([x, mean, std], dim=1)
+            attn = torch.cat([x, mean, std], dim=1)
         else:
             attn = x
 
@@ -300,7 +300,7 @@ class AttentiveStatisticsPooling(nn.Module):
         attn = F.softmax(attn, dim=2)
         mean, std = _compute_statistics(x, attn)
         # Append mean and std of the batch
-        pooled_stats = Cat((mean, std), dim=1)
+        pooled_stats = torch.cat((mean, std), dim=1)
         pooled_stats = pooled_stats.unsqueeze(2)
 
         return pooled_stats
@@ -543,7 +543,7 @@ class ECAPA_TDNN(torch.nn.Module):
             xl.append(x)
 
         # Multi-layer feature aggregation
-        x = Cat(xl[1:], dim=1)  # Ignore the initial TDNN block
+        x = torch.cat(xl[1:], dim=1)  # Ignore the initial TDNN block
         # print("MLA Input: ", x.shape)
         x = self.mfa(x)
         # print("MLA Output: ", x.shape)

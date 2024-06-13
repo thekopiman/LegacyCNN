@@ -8,7 +8,23 @@ The `Conv1d` layer used by Speechbrain is different from the one from Pytorch.
 
 Speechbrain conv1d [docs](https://speechbrain.readthedocs.io/en/latest/_modules/speechbrain/nnet/CNN.html#Conv1d)
 
-Likewise, the other layers utilised by speechbrain models (eg. `Conv2d`) are different as well. However, this repo will not replicate them. Only `Conv1d` will be replicated.
+If you set the \*args of `Conv1d` (Speechbrain) to default; without changing any padding arguments (padding, padding_mode, default_padding).\
+
+Example of basic `Conv1d` usage
+
+```
+layer = Conv1d(
+            in_channels=in_channels,
+            out_channels=out_channels,
+            kernel_size=kernel_size,
+            dilation=dilation,
+            groups=groups,
+        )
+```
+
+Then, a basic `F.pad(x, (p, 0))` (Left pad) will be applied to the input before `matmul`. The value of p is selected such that the output dimension is equal to the input dimension.
+
+Likewise, the other layers utilised by speechbrain models (eg. `Conv2d`) are different as well. However, this repo will not replicate them. Only `Conv1d` will be replicated in C++.
 
 # Pytorch: Model creation
 

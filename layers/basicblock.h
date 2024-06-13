@@ -12,12 +12,12 @@
 // ReLU
 // BatchNorm
 template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
-class TDNNBlock
+class BasicBlock
 {
 public:
-    TDNNBlock()
+    BasicBlock()
     {
-        // std::cout << "TDNNBlock initialised" << std::endl;
+        // std::cout << "BasicBlock initialised" << std::endl;
     }
 
     // Set weights directly
@@ -64,7 +64,7 @@ public:
         layer1.getOutput(output, output);
     }
 
-    ~TDNNBlock()
+    ~BasicBlock()
     {
         delete (&layer0);
         delete (&layer1);

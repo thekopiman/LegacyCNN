@@ -30,7 +30,7 @@ from .saveasfile import SaveAsByte
 #         return x_padded
 
 
-def TDNNBlock(in_channels, out_channels, kernel, stride=1):
+def BasicBlock(in_channels, out_channels, kernel, stride=1):
     return nn.Sequential(
         nn.Conv1d(in_channels, out_channels, kernel, stride),
         nn.ReLU(inplace=True),
@@ -46,11 +46,11 @@ class BasicModel(torch.nn.Module):
 
         # self.input_layer = InputTransform(output_size = input_length)
 
-        self.layer0 = TDNNBlock(self.inputs, 4, 3)
-        self.layer1 = TDNNBlock(4, 4, 3)
-        self.layer2 = TDNNBlock(4, 4, 3)
-        self.layer3 = TDNNBlock(4, 4, 3)
-        self.layer4 = TDNNBlock(4, 4, 3)
+        self.layer0 = BasicBlock(self.inputs, 4, 3)
+        self.layer1 = BasicBlock(4, 4, 3)
+        self.layer2 = BasicBlock(4, 4, 3)
+        self.layer3 = BasicBlock(4, 4, 3)
+        self.layer4 = BasicBlock(4, 4, 3)
 
         # Final Dense Layer
         self.final = nn.Sequential(

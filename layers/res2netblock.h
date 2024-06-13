@@ -22,7 +22,6 @@ public:
     }
     ~Res2NetBlock()
     {
-        delete (&blocks);
     }
 
 private:

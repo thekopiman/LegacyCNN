@@ -136,7 +136,7 @@ public:
 				std::cout << std::endl;
 			}
 		}
-	}
+	};
 
 	// Overloading from filename
 	void setBias(std::string filename, bool displayBias)
@@ -171,17 +171,8 @@ public:
 			}
 			std::cout << std::endl;
 		}
-	}
-	void padInput(T (&input)[channel_in][input_width])
-	{
-		for (int i = 0; i < channel_in; i++)
-		{
-			for (int j = 0; j < input_width; j++)
-			{
-				this->empty_input[i][j + pad] = input[i][j];
-			}
-		}
-	}
+	};
+
 	void getOutput(T (&input)[channel_in][input_width], T (&output)[channel_out][out_dim])
 	{
 		// Here we assume that the dim of input/output is correct -> else it will lead to errors
@@ -217,10 +208,6 @@ public:
 
 	~Conv1d()
 	{
-		delete (&matrix);
-		delete (&flat_matrix);
-		delete (&bias);
-		delete (&empty_input);
 	}
 
 private:
@@ -228,6 +215,17 @@ private:
 	T flat_matrix[channel_out * channel_in * kernel];
 	T bias[channel_out];
 	T empty_input[channel_in][input_width + 2 * pad];
+
+	void padInput(T (&input)[channel_in][input_width])
+	{
+		for (int i = 0; i < channel_in; i++)
+		{
+			for (int j = 0; j < input_width; j++)
+			{
+				this->empty_input[i][j + pad] = input[i][j];
+			}
+		}
+	};
 };
 
 #endif

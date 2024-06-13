@@ -25,22 +25,7 @@ BasicCNNModel::BasicCNNModel()
 {
     std::cout << "Model initialised" << std::endl;
 };
-BasicCNNModel::~BasicCNNModel()
-{
-    delete (&Block0);
-    delete (&Block1);
-    delete (&Block2);
-    delete (&Block3);
-    delete (&Block4);
-    delete (&flatten_x);
-    delete (&fc);
-    delete (&x0);
-    delete (&x1);
-    delete (&x2);
-    delete (&x3);
-    delete (&x4);
-    std::cout << "BasicCNNModel deleted" << std::endl;
-};
+BasicCNNModel::~BasicCNNModel(){};
 
 void BasicCNNModel::loadweights()
 {

@@ -66,8 +66,6 @@ public:
 
     ~BasicBlock()
     {
-        delete (&layer0);
-        delete (&layer1);
     }
 
 private:

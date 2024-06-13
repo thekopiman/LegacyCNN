@@ -1,6 +1,7 @@
 #include <iostream>
 #include "models/basiccnn.h"
 #include "utils/helper.h"
+#include "utils/activationfunctions.h"
 
 int main()
 {
@@ -12,7 +13,7 @@ int main()
     float input[2][16];
     float y[6];
 
-    Helper::readInputs("BasicModelWeights\\input.bin", input);
+    Helper::readInputs("BasicModelWeights/input.bin", input);
     model.loadweights();
     model.forward(input, y);
 

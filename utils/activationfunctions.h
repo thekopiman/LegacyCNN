@@ -61,5 +61,25 @@ public:
             }
         }
     }
+    template <size_t rows, size_t cols, typename T>
+    static void Sigmoid(T (&input)[rows][cols])
+    {
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                input[i][j] = 1 / (1 + (T)exp(-(double)input[i][j]));
+            }
+        }
+    }
+
+    template <size_t rows, typename T>
+    static void Sigmoid(T (&input)[rows])
+    {
+        for (int i = 0; i < rows; i++)
+        {
+            input[i] = 1 / (1 + (T)exp(-(double)input[i]));
+        }
+    }
 };
 #endif

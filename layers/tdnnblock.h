@@ -17,7 +17,7 @@ class TDNNBlock
 public:
     TDNNBlock()
     {
-        std::cout << "TDNNBlock initialised" << std::endl;
+        // std::cout << "TDNNBlock initialised" << std::endl;
     }
 
     // Set weights directly

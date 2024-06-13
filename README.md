@@ -28,6 +28,6 @@ Make sure you load the weights via the `.bin` files before running `forward`.
 ### Compile & Run as follows
 
 ```
-g++ -O2 *.cpp layers/*.h models/*.h -o test
+g++ -O2 *.cpp layers/*.h models/*.h utils/*.h -o test
 test
 ```

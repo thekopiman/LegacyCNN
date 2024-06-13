@@ -27,7 +27,7 @@ public:
             this->bias[i] = 0.0;
         }
 
-        std::cout << "Dense initialised" << std::endl;
+        // std::cout << "Dense initialised" << std::endl;
     };
 
     void setWeights(T (&new_weights)[input_dim][output_dim])

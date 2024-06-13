@@ -77,6 +77,17 @@ public:
         }
     };
 
+    // mat1 += mat2
+    // The output will be on mat1
+    template <size_t dim1, typename T>
+    static void matrixAdd(T (&mat1)[dim1], T (&mat2)[dim1])
+    {
+        for (int i = 0; i < dim1; i++)
+        {
+            mat1[i] += mat2[i];
+        }
+    };
+
     // Chunk is not necessary here as we are spliting based on channel/dim1
 };
 

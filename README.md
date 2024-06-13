@@ -2,6 +2,14 @@
 
 Libraries to integrate CNN models into legacy C++ systems without using Torchscript
 
+# Important: Conv1d discrepancy
+
+The `Conv1d` layer used by Speechbrain is different from the one from Pytorch.
+
+Speechbrain conv1d [docs](https://speechbrain.readthedocs.io/en/latest/_modules/speechbrain/nnet/CNN.html#Conv1d)
+
+Likewise, the other layers utilised by speechbrain models (eg. `Conv2d`) are different as well. However, this repo will not replicate them. Only `Conv1d` will be replicated.
+
 # Pytorch: Model creation
 
 Create a model in PyTorch. \

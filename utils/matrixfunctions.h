@@ -153,6 +153,44 @@ public:
             output[i] = input[i];
         }
     };
+
+    template <size_t dim1, size_t dim2, typename T>
+    static void HadamardProduct(T (&mat1)[dim1][dim2], T (&mat2)[dim1][dim2], T (&output)[dim1][dim2])
+    {
+        assert(dim2 == dim3);
+
+        for (int i = 0; i < dim1; i++)
+        {
+            for (int j = 0; j < dim2; j++)
+            {
+                output[i][j] = mat1[i][j] * mat2[i][j];
+            }
+        }
+    }
+
+    template <size_t dim1, size_t dim2, typename T>
+    static void HadamardProduct(T (&mat1)[dim1][dim2], T (&mat2)[dim1], T (&output)[dim1][dim2])
+    {
+        assert(dim2 == dim3);
+
+        for (int i = 0; i < dim1; i++)
+        {
+            for (int j = 0; j < dim2; j++)
+            {
+                output[i][j] = mat1[i][j] * mat2[i];
+            }
+        }
+    }
+
+    // Mean will be based on dim2
+    template <size_t dim1, size_t dim2, typename T>
+    static void Mean(T (&input)[dim1][dim2], T (&output)[dim1])
+    {
+        for (int i = 0; i < dim1; i++)
+        {
+            output = Sum(input[i]) / dim2;
+        }
+    }
 };
 
 #endif

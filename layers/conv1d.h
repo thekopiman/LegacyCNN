@@ -6,9 +6,12 @@
 #include <string>
 #include <iostream>
 
+// kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T
+//
 // out_dim = (input_width + 2*pad - dilation*(kernel - 1) - 1)/stride + 1
 // Padding mode
 // 0 : Normal padding (at both sides), 1 : Left Pad, 2: Right Pad
+// For Normal padding make sure you allocate x2 since padding will be (p/2, p/2)
 template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
 class Conv1d
 {
@@ -195,7 +198,7 @@ private:
 	T matrix[channel_out][channel_in][kernel];
 	T flat_matrix[channel_out * channel_in * kernel];
 	T bias[channel_out];
-	T empty_input[channel_in][input_width + 2 * pad];
+	T empty_input[channel_in][input_width + pad];
 	int padding_mode = 0;
 
 	void padInput(T (&input)[channel_in][input_width])
@@ -223,7 +226,7 @@ private:
 			{
 				for (int j = 0; j < input_width; j++)
 				{
-					this->empty_input[i][j + pad] = input[i][j];
+					this->empty_input[i][j + pad / 2] = input[i][j];
 				}
 			}
 		}

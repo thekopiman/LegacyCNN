@@ -8,7 +8,7 @@ The `Conv1d` layer used by Speechbrain is different from the one from Pytorch.
 
 Speechbrain conv1d [docs](https://speechbrain.readthedocs.io/en/latest/_modules/speechbrain/nnet/CNN.html#Conv1d)
 
-If you set the \*args of `Conv1d` (Speechbrain) to default; without changing any padding arguments (padding, padding_mode, default_padding).\
+If you set the \*args of `Conv1d` (Speechbrain) to default; without changing any padding arguments (padding, padding_mode, default_padding).
 
 Example of basic `Conv1d` usage
 
@@ -25,6 +25,27 @@ layer = Conv1d(
 Then, a basic `F.pad(x, (p, 0))` (Left pad) will be applied to the input before `matmul`. The value of p is selected such that the output dimension is equal to the input dimension.
 
 Likewise, the other layers utilised by speechbrain models (eg. `Conv2d`) are different as well. However, this repo will not replicate them. Only `Conv1d` will be replicated in C++.
+
+## Conv1d (SpeechBrain)
+
+Default Arguments:
+
+```
+out_channels,
+kernel_size,
+input_shape=None,
+in_channels=None,
+stride=1,
+dilation=1,
+padding="same",
+groups=1,
+bias=True,
+padding_mode="reflect",
+skip_transpose=False,
+weight_norm=False,
+conv_init=None,
+default_padding=0,
+```
 
 # Pytorch: Model creation
 
@@ -51,7 +72,7 @@ Make sure you load the weights via the `.bin` files before running `forward`.
 
 ### Compile & Run as follows
 
-```
+```bash
 g++ -O2 *.cpp layers/*.h models/*.h utils/*.h -o test
 test
 ```

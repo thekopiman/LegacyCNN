@@ -168,6 +168,7 @@ public:
         }
     }
 
+    // Hadamard Product here aim to replicate the Broadcasting feature in PyTorch
     template <size_t dim1, size_t dim2, typename T>
     static void HadamardProduct(T (&mat1)[dim1][dim2], T (&mat2)[dim1], T (&output)[dim1][dim2])
     {

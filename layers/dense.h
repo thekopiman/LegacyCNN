@@ -123,7 +123,7 @@ public:
         }
     };
 
-    void getOutput(T (&input)[input_dim], T (&output)[output_dim])
+    void forward(T (&input)[input_dim], T (&output)[output_dim])
     {
         for (int i = 0; i < output_dim; i++)
         {

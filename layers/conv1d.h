@@ -7,40 +7,21 @@
 #include <iostream>
 
 // out_dim = (input_width + 2*pad - dilation*(kernel - 1) - 1)/stride + 1
+// Padding mode
+// 0 : Normal padding (at both sides), 1 : Left Pad, 2: Right Pad
 template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
 class Conv1d
 {
 public:
 	Conv1d()
 	{
-		// Initialize kernel weights to 0
-		// The matrix has been automatically dilated
-		for (int i = 0; i < channel_out; ++i)
-		{
-			for (int j = 0; j < channel_in; ++j)
-			{
-				for (int k = 0; k < kernel; ++k)
-				{
-					this->matrix[i][j][k] = 0.0; // Initialize with 0.0
-				}
-			}
-		}
-
-		// Initialize bias to 0
-		for (int i = 0; i < channel_out; ++i)
-		{
-			this->bias[i] = 0.0; // Initialize with 0.0
-		}
-
-		// Initialize empty_input to 0
-		for (int i = 0; i < channel_in; ++i)
-		{
-			for (int j = 0; j < input_width + 2 * pad; ++j)
-			{
-
-				this->empty_input[i][j] = 0.0; // Initialize with 0.0
-			}
-		}
+		init();
+	};
+	// Overloaded constructor
+	Conv1d(int padding_mode)
+	{
+		init();
+		this->padding_mode = padding_mode;
 	};
 	void setWeights(T (&new_weights)[channel_out][channel_in][kernel])
 	{
@@ -173,7 +154,7 @@ public:
 		}
 	};
 
-	void getOutput(T (&input)[channel_in][input_width], T (&output)[channel_out][out_dim])
+	void forward(T (&input)[channel_in][input_width], T (&output)[channel_out][out_dim])
 	{
 		// Here we assume that the dim of input/output is correct -> else it will lead to errors
 
@@ -215,17 +196,69 @@ private:
 	T flat_matrix[channel_out * channel_in * kernel];
 	T bias[channel_out];
 	T empty_input[channel_in][input_width + 2 * pad];
+	int padding_mode = 0;
 
 	void padInput(T (&input)[channel_in][input_width])
 	{
 		for (int i = 0; i < channel_in; i++)
 		{
-			for (int j = 0; j < input_width; j++)
+			// Left Pad
+			if (padding_mode == 1)
 			{
-				this->empty_input[i][j + pad] = input[i][j];
+				for (int j = 0; j < input_width; j++)
+				{
+					this->empty_input[i][j + 2 * pad] = input[i][j];
+				}
+			}
+			// Right Pad
+			else if (padding_mode == 2)
+			{
+				for (int j = 0; j < input_width; j++)
+				{
+					this->empty_input[i][j] = input[i][j];
+				}
+			}
+			// Normal Pad
+			else
+			{
+				for (int j = 0; j < input_width; j++)
+				{
+					this->empty_input[i][j + pad] = input[i][j];
+				}
 			}
 		}
 	};
+
+	void init()
+	{ // Initialize kernel weights to 0
+		// The matrix has been automatically dilated
+		for (int i = 0; i < channel_out; ++i)
+		{
+			for (int j = 0; j < channel_in; ++j)
+			{
+				for (int k = 0; k < kernel; ++k)
+				{
+					this->matrix[i][j][k] = 0.0; // Initialize with 0.0
+				}
+			}
+		}
+
+		// Initialize bias to 0
+		for (int i = 0; i < channel_out; ++i)
+		{
+			this->bias[i] = 0.0; // Initialize with 0.0
+		}
+
+		// Initialize empty_input to 0
+		for (int i = 0; i < channel_in; ++i)
+		{
+			for (int j = 0; j < input_width + 2 * pad; ++j)
+			{
+
+				this->empty_input[i][j] = 0.0; // Initialize with 0.0
+			}
+		}
+	}
 };
 
 #endif

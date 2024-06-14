@@ -107,7 +107,7 @@ public:
     {
         this->eps = var;
     };
-    void getOutput(T (&input)[channel][width], T (&output)[channel][width])
+    void forward(T (&input)[channel][width], T (&output)[channel][width])
     {
         // Calculate mean E(X) first
         for (int c = 0; c < channel; c++)

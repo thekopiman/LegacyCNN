@@ -2,19 +2,19 @@
 
 void BasicCNNModel::forward(float (&input)[2][16], float (&y)[6])
 {
-    Block0.getOutput(input, x0);
+    Block0.forward(input, x0);
 
-    Block1.getOutput(x0, x1);
+    Block1.forward(x0, x1);
 
-    Block2.getOutput(x1, x2);
+    Block2.forward(x1, x2);
 
-    Block3.getOutput(x2, x3);
+    Block3.forward(x2, x3);
 
-    Block4.getOutput(x3, x4);
+    Block4.forward(x3, x4);
 
     MatrixFunctions::Flatten(x4, flatten_x);
 
-    fc.getOutput(flatten_x, y);
+    fc.forward(flatten_x, y);
 
     std::cout << std::endl;
 

@@ -98,14 +98,15 @@ public:
             {
                 for (int k = 0; k < dim2; k++)
                 {
-                    output[i][j][k] = input[i * chunk + j][k];
+                    output[i][j][k] = input[i * dim1 + j][k];
+                    // std::cout << i << j << " " << i * dim1 + j << " " << output[i][j][k] << std::endl;
                 }
             }
         }
     };
 
     template <size_t dim1, size_t dim2, size_t chunk, typename T>
-    static void Cat(T (&input)[chunk][dim1][dim2], T (&ouput)[chunk * dim1][dim2])
+    static void Cat(T (&input)[chunk][dim1][dim2], T (&output)[chunk * dim1][dim2])
     {
         for (int i = 0; i < chunk; i++)
         {
@@ -120,7 +121,7 @@ public:
     };
 
     template <size_t dim1, size_t dim2, size_t dim3, typename T>
-    static void Copy(T (&input)[dim1][dim2][dim3], T (&ouput)[dim1][dim2][dim3])
+    static void Copy(T (&input)[dim1][dim2][dim3], T (&output)[dim1][dim2][dim3])
     {
         for (int i = 0; i < dim1; i++)
         {
@@ -128,28 +129,28 @@ public:
             {
                 for (int k = 0; k < dim3; k++)
                 {
-                    ouput[i][j][k] = input[i][j][k];
+                    output[i][j][k] = input[i][j][k];
                 }
             }
         }
     };
     template <size_t dim1, size_t dim2, typename T>
-    static void Copy(T (&input)[dim1][dim2], T (&ouput)[dim1][dim2])
+    static void Copy(T (&input)[dim1][dim2], T (&output)[dim1][dim2])
     {
         for (int i = 0; i < dim1; i++)
         {
             for (int j = 0; j < dim2; j++)
             {
-                ouput[i][j] = input[i][j];
+                output[i][j] = input[i][j];
             }
         }
     };
     template <size_t dim1, typename T>
-    static void Copy(T (&input)[dim1], T (&ouput)[dim1])
+    static void Copy(T (&input)[dim1], T (&output)[dim1])
     {
         for (int i = 0; i < dim1; i++)
         {
-            ouput[i] = input[i];
+            output[i] = input[i];
         }
     };
 };

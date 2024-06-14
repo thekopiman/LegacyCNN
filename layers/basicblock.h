@@ -57,11 +57,11 @@ public:
     };
 
     // Get Output
-    void getOutput(T (&input)[channel_in][input_width], T (&output)[channel_out][out_dim])
+    void forward(T (&input)[channel_in][input_width], T (&output)[channel_out][out_dim])
     {
-        layer0.getOutput(input, output);
+        layer0.forward(input, output);
         ActivationFunctions::ReLU<channel_out, out_dim, T>(output);
-        layer1.getOutput(output, output);
+        layer1.forward(output, output);
     }
 
     ~BasicBlock()

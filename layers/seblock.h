@@ -10,7 +10,7 @@
 #include <assert.h>
 
 // With ref to the python code, we always assume lengths = None
-template <int kernel, int channel_in, int channel_se, int channel_out, int input_width, int out_dim, int input_pad, typename T>
+template <int channel_in, int channel_se, int channel_out, int input_width, int out_dim, typename T>
 class SEBlock
 {
 public:

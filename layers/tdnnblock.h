@@ -8,9 +8,13 @@
 #include "batchnorm1d.h"
 #include <string>
 
+// kernel, stride, channel_in, channel_out, dilation, input_width, out_dim, input_pad, T
+//
+// Layers:
 // Conv1d
 // ReLU
 // BatchNorm
+//
 // We assume pad = 0 (excluding input_pad)
 // Make sure you calculate input_pad properly so that input_width == out_dim
 template <int kernel, int stride, int channel_in, int channel_out, int dilation, int input_width, int out_dim, int input_pad, typename T>
@@ -20,6 +24,8 @@ public:
     TDNNBlock() : layer0(1)
     {
         // std::cout << "TDNNBlock initialised" << std::endl;
+        setWeights_layer0("ECAPAweights/test_weights.bin", false);
+        setBias_layer0("ECAPAweights/test_bias.bin", false);
     }
 
     // Set weights directly
@@ -62,8 +68,8 @@ public:
     void forward(T (&input)[channel_in][input_width], T (&output)[channel_out][out_dim])
     {
         layer0.forward(input, output);
-        // ActivationFunctions::ReLU<channel_out, out_dim, T>(output);
-        // layer1.forward(output, output);
+        ActivationFunctions::ReLU<channel_out, out_dim, T>(output);
+        layer1.forward(output, output);
     }
 
     ~TDNNBlock()

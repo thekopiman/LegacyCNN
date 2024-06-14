@@ -114,7 +114,7 @@ public:
             {
                 for (int k = 0; k < dim2; k++)
                 {
-                    output[i * chunk + j][k] = input[i][j][k];
+                    output[i * dim1 + j][k] = input[i][j][k];
                 }
             }
         }

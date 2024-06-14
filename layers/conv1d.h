@@ -207,7 +207,7 @@ private:
 			{
 				for (int j = 0; j < input_width; j++)
 				{
-					this->empty_input[i][j + 2 * pad] = input[i][j];
+					this->empty_input[i][j + pad] = input[i][j];
 				}
 			}
 			// Right Pad

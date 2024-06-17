@@ -192,6 +192,92 @@ public:
             output = Sum(input[i]) / dim2;
         }
     }
+
+    // Clamp
+    template <size_t dim1, size_t dim2, typename T>
+    static void Clamp(T (&input)[dim1][dim2], T min, T max)
+    {
+        for (int i = 0; i < dim1; i++)
+        {
+            for (int j = 0; j < dim2; j++)
+            {
+                if (input[i][j] < min)
+                {
+                    input[i][j] = min;
+                }
+                else if (input[i][j] > max)
+                {
+                    intput[i][j] = max;
+                }
+            }
+        }
+    }
+
+    // Clamp
+    template <size_t dim1, typename T>
+    static void Clamp(T (&input)[dim1], T min, T max)
+    {
+        for (int i = 0; i < dim1; i++)
+        {
+            if (input[i] < min)
+            {
+                input[i] = min;
+            }
+            else if (input[i] > max)
+            {
+                intput[i] = max;
+            }
+        }
+    }
+
+    // Clamp min only
+    template <typename T>
+    static T Clamp(T input, T min)
+    {
+        if (input < min)
+        {
+            return min;
+        }
+        else
+        {
+            return input;
+        }
+    }
+
+    // Obtain std
+    template <size_t dim1, size_t dim2, typename T>
+    static void Std(T (&input)[dim1][dim2], T (&output)[dim1])
+    {
+        T eps = 1e-12;
+        T mean[dim1];
+        T variance[dim1];
+        for (int i = 0; i < channel; i++)
+        {
+            mean[i] = 0;
+            variance[i] = 0;
+        }
+
+        // Calculate mean E(X) first
+        for (int c = 0; c < dim1; c++)
+        {
+            for (int i = 0; i < dim2; i++)
+            {
+                mean[c] += input[c][i];
+            }
+            mean[c] /= dim2;
+        }
+
+        // Calculate Population Variance Var(X)
+        for (int c = 0; c < dim1; c++)
+        {
+            for (int i = 0; i < dim2; i++)
+            {
+                variance[c] += (input[c][i] - mean[c]) * (input[c][i] - mean[c]);
+            }
+            variance[c] /= dim2;
+            output[c] = std::sqrt(Clamp(variance[c], eps));
+        }
+    }
 };
 
 #endif

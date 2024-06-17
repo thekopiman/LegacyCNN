@@ -81,5 +81,25 @@ public:
             input[i] = 1 / (1 + (T)exp(-(double)input[i]));
         }
     }
+    template <size_t rows, size_t cols, typename T>
+    static void Tanh(T (&input)[rows][cols])
+    {
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                input[i][j] = (exp(input[i][j]) - exp(-input[i][j])) / (exp(input[i][j]) + exp(-input[i][j]));
+            }
+        }
+    }
+
+    template <size_t rows, typename T>
+    static void Tanh(T (&input)[rows])
+    {
+        for (int i = 0; i < rows; i++)
+        {
+            input[i] = (exp(input[i]) - exp(-input[i])) / (exp(input[i]) + exp(-input[i]));
+        }
+    }
 };
 #endif

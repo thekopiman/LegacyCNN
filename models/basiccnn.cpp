@@ -23,9 +23,9 @@ void BasicCNNModel::forward(float (&input)[2][16], float (&y)[6])
 
 BasicCNNModel::BasicCNNModel()
 {
-    std::cout << "Model initialised" << std::endl;
+    std::cout << "BasicModel initialised" << std::endl;
 };
-BasicCNNModel::~BasicCNNModel(){};
+BasicCNNModel::~BasicCNNModel() {};
 
 void BasicCNNModel::loadweights()
 {

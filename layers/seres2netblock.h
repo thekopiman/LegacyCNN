@@ -15,32 +15,9 @@ template <int kernel, int channel_in, int channel_out, int dilation, int input_w
 class SERes2NetBlock
 {
 public:
-    SERes2NetBlock()
-    {
-        assert(input_width == out_dim);
-
-        // std::cout << "SERes2NetBlock initialized" << std::endl;
-    }
-    void forward(T (&input)[channel_in][input_width], T (&output)[channel_out][out_dim])
-    {
-        if (channel_in != channel_out)
-        {
-            this->shortcut.forward(input, this->residual);
-        }
-        else
-        {
-            MatrixFunctions::Copy(input, this->residual);
-        }
-
-        this->tdnn1.forward(input, this->x1);
-        this->res2net.forward(this->x1, this->x1);
-        this->tdnn1.forward(this->x1, this->x1);
-        this->seblock.forward(this->x1, this->x1);
-
-        // return x + residual
-        MatrixFunctions::matrixAdd(this->x1, this->residual);
-        MatrixFunctions::Copy(this->x1, output);
-    }
+    SERes2NetBlock();
+    void forward(T (&input)[channel_in][input_width], T (&output)[channel_out][out_dim]);
+    ~SERes2NetBlock();
 
 private:
     TDNNBlock<1, 1, channel_in, channel_out, 1, input_width, out_dim, 0, T> tdnn1;
@@ -51,5 +28,7 @@ private:
     Conv1d<1, 1, channel_in, channel_out, 0, 1, input_width, out_dim, T> shortcut;
     T residual[channel_out][out_dim];
 };
+
+#include "seres2netblock.cpp"
 
 #endif

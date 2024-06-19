@@ -18,29 +18,29 @@ public:
         assert(channel_in % scale == 0);
         assert(channel_out % scale == 0);
 
-        std::cout << "Res2NetBlock initialised" << std::endl;
+        // std::cout << "Res2NetBlock initialised" << std::endl;
     }
     void forward(T (&input)[channel_in][input_width], T (&output)[channel_out][out_dim])
     {
-        std::cout << "Scale: " << scale << std::endl;
-        std::cout << "in_channel: " << channel_in / scale << std::endl;
-        std::cout << "input_width: " << input_width << std::endl;
+        // std::cout << "Scale: " << scale << std::endl;
+        // std::cout << "in_channel: " << channel_in / scale << std::endl;
+        // std::cout << "input_width: " << input_width << std::endl;
 
         MatrixFunctions::Chunk(input, this->input_chunks);
 
-        std::cout << "Chunk ok " << std::endl;
+        // std::cout << "Chunk ok " << std::endl;
 
         for (int i = 0; i < scale; i++)
         {
             if (i == 0)
             {
                 MatrixFunctions::Copy(this->input_chunks[i], this->y_i);
-                std::cout << "i = 0 ok " << std::endl;
+                // std::cout << "i = 0 ok " << std::endl;
             }
             else if (i == 1)
             {
                 this->blocks[i - 1].forward(this->input_chunks[i], this->y_i);
-                std::cout << "i = 1 ok " << std::endl;
+                // std::cout << "i = 1 ok " << std::endl;
             }
             else
             {

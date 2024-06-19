@@ -24,8 +24,8 @@ public:
     TDNNBlock() : layer0(1)
     {
         // std::cout << "TDNNBlock initialised" << std::endl;
-        setWeights_layer0("ECAPAweights/test_weights.bin", false);
-        setBias_layer0("ECAPAweights/test_bias.bin", false);
+        // setWeights_layer0("ECAPAweights/test_weights.bin", false);
+        // setBias_layer0("ECAPAweights/test_bias.bin", false);
     }
 
     // Set weights directly

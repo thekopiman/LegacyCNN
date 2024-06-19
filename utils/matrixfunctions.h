@@ -157,8 +157,6 @@ public:
     template <size_t dim1, size_t dim2, typename T>
     static void HadamardProduct(T (&mat1)[dim1][dim2], T (&mat2)[dim1][dim2], T (&output)[dim1][dim2])
     {
-        assert(dim2 == dim3);
-
         for (int i = 0; i < dim1; i++)
         {
             for (int j = 0; j < dim2; j++)
@@ -172,7 +170,6 @@ public:
     template <size_t dim1, size_t dim2, typename T>
     static void HadamardProduct(T (&mat1)[dim1][dim2], T (&mat2)[dim1], T (&output)[dim1][dim2])
     {
-        assert(dim2 == dim3);
 
         for (int i = 0; i < dim1; i++)
         {
@@ -189,7 +186,7 @@ public:
     {
         for (int i = 0; i < dim1; i++)
         {
-            output = Sum(input[i]) / dim2;
+            output[i] = Sum(input[i]) / dim2;
         }
     }
 
@@ -207,7 +204,7 @@ public:
                 }
                 else if (input[i][j] > max)
                 {
-                    intput[i][j] = max;
+                    input[i][j] = max;
                 }
             }
         }
@@ -241,7 +238,7 @@ public:
             }
             else if (input[i] > max)
             {
-                intput[i] = max;
+                input[i] = max;
             }
         }
     }
@@ -267,7 +264,7 @@ public:
         T eps = 1e-12;
         T mean[dim1];
         T variance[dim1];
-        for (int i = 0; i < channel; i++)
+        for (int i = 0; i < dim1; i++)
         {
             mean[i] = 0;
             variance[i] = 0;

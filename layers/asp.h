@@ -27,9 +27,9 @@ public:
         // attn = torch.cat([x, mean, std], dim=1)
         for (int i = 0; i < channels; i++)
         {
-            for (int j = 0; j < input_width; i++)
+            for (int j = 0; j < input_width; j++)
             {
-                this->attn[i][j] = this->input[i][j];
+                this->attn[i][j] = input[i][j];
                 this->attn[channels + i][j] = this->mean[i];    // mean = mean.unsqueeze(2).repeat(1, 1, L)
                 this->attn[2 * channels + i][j] = this->std[i]; // std = std.unsqueeze(2).repeat(1, 1, L)
             }
@@ -81,14 +81,14 @@ private:
             for (int j = 0; j < input_width; j++)
             {
                 x[i][j] -= this->mean[i]; // x - mean
-                x[i][j] *= x[i][j]        // pow(2)
+                x[i][j] *= x[i][j];       // pow(2)
             }
         }
 
         MatrixFunctions::HadamardProduct(x, m, temp);
         for (int i = 0; i < channels; i++)
         {
-            this->std[i] = MatrixFunctions::Clamp(MatrixFunctions::Sum(temp[i]), 1e-12);
+            this->std[i] = MatrixFunctions::Clamp(MatrixFunctions::Sum(temp[i]), (T)1e-12);
             this->std[i] = std::sqrt(this->std[i]);
         }
     }

@@ -19,27 +19,27 @@ public:
     {
         assert(input_width == out_dim);
 
-        std::cout << "SERes2NetBlock initialized" << std::endl;
+        // std::cout << "SERes2NetBlock initialized" << std::endl;
     }
     void forward(T (&input)[channel_in][input_width], T (&output)[channel_out][out_dim])
     {
         if (channel_in != channel_out)
         {
-            shortcut.forward(input, residual);
+            this->shortcut.forward(input, this->residual);
         }
         else
         {
-            MatrixFunctions::Copy(input, residual);
+            MatrixFunctions::Copy(input, this->residual);
         }
 
-        this->tdnn1.forward(input, x1);
-        this->res2net.forward(x1, x1);
-        this->tdnn1.forward(x1, x1);
-        this->seblock.forward(x1, x1);
+        this->tdnn1.forward(input, this->x1);
+        this->res2net.forward(this->x1, this->x1);
+        this->tdnn1.forward(this->x1, this->x1);
+        this->seblock.forward(this->x1, this->x1);
 
         // return x + residual
-        MatrixFunctions::matrixAdd(x1, residual);
-        MatrixFunctions::Copy(x1, output);
+        MatrixFunctions::matrixAdd(this->x1, this->residual);
+        MatrixFunctions::Copy(this->x1, output);
     }
 
 private:
@@ -49,7 +49,7 @@ private:
     TDNNBlock<1, 1, channel_out, channel_out, 1, input_width, out_dim, 0, T> tdnn2;
     SEBlock<channel_out, channel_se, channel_out, input_width, out_dim, T> seblock;
     Conv1d<1, 1, channel_in, channel_out, 0, 1, input_width, out_dim, T> shortcut;
-    T residual[channel_out][channel_in];
+    T residual[channel_out][out_dim];
 };
 
 #endif

@@ -19,7 +19,7 @@ public:
     {
     }
 
-    void forward(T (&input)[channels][input_width], T (&output)[2][channels])
+    void forward(T (&input)[channels][input_width], T (&output)[channels * 2][1])
     {
         MatrixFunctions::Mean(input, this->mean);
         MatrixFunctions::Std(input, this->std);
@@ -30,8 +30,8 @@ public:
             for (int j = 0; j < input_width; i++)
             {
                 this->attn[i][j] = this->input[i][j];
-                this->attn[channels + i][j] = this->mean[i];
-                this->attn[2 * channels + i][j] = this->std[i];
+                this->attn[channels + i][j] = this->mean[i];    // mean = mean.unsqueeze(2).repeat(1, 1, L)
+                this->attn[2 * channels + i][j] = this->std[i]; // std = std.unsqueeze(2).repeat(1, 1, L)
             }
         }
 
@@ -40,28 +40,17 @@ public:
         ActivationFunctions::Tanh(this->attn1);
         this->conv.forward(this->attn1, this->attn2);
 
-        // Filter out zero-paddings
-        for (int i = 0; i < channels; i++)
-        {
-            for (int j = 0; j < input_width; j++)
-            {
-                if (this->attn2[i][j] == 0)
-                {
-                    this->attn2[i][j] = std::numeric_limits<T>::lowest();
-                }
-            }
-        }
+        // Filter out zero-paddings is redundant here
 
         ActivationFunctions::Softmax(this->attn2);
 
         // Obtain Pooled statistics
-        MatrixFunctions::Mean(MatrixFunctions::HadamardProduct(this->input, this->attn2), this->mean);
-        MatrixFunctions::Std(MatrixFunctions::HadamardProduct(this->input, this->attn2), this->std);
+        compute_statistics(input, attn2);
 
         for (int i = 0; i < channels; i++)
         {
-            this->output[0][i] = this->mean[i];
-            this->output[1][i] = this->std[i];
+            output[i][0] = this->mean[i];
+            output[channels + i][0] = this->std[i];
         }
     }
 
@@ -73,6 +62,36 @@ private:
     T attn2[channels][input_width];
     T mean[channels];
     T std[channels];
+
+    void compute_statistics(T (&x)[channels][input_width], T (&m)[channels][input_width])
+    {
+        T temp[channels][input_width];
+
+        // Obtain Mean here
+        MatrixFunctions::HadamardProduct(x, m, temp);
+        for (int i = 0; i < channels; i++)
+        {
+            this->mean[i] = MatrixFunctions::Sum(temp[i]);
+        }
+
+        // Obtain Population Std here
+
+        for (int i = 0; i < channels; i++)
+        {
+            for (int j = 0; j < input_width; j++)
+            {
+                x[i][j] -= this->mean[i]; // x - mean
+                x[i][j] *= x[i][j]        // pow(2)
+            }
+        }
+
+        MatrixFunctions::HadamardProduct(x, m, temp);
+        for (int i = 0; i < channels; i++)
+        {
+            this->std[i] = MatrixFunctions::Clamp(MatrixFunctions::Sum(temp[i]), 1e-12);
+            this->std[i] = std::sqrt(this->std[i]);
+        }
+    }
 };
 
 #endif

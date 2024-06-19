@@ -36,7 +36,8 @@ private:
     TDNNBlock<1, 1, 3 * 8, 16, 1, 64, 64, 0, float> mfa;
     float y0[16][64];
     ASP<16, 128, 64, 2, float> asp;
-    BatchNorm1d<16 * 2, 64, float> ASP_BN;
+    float y1[32][1];
+    BatchNorm1d<16 * 2, 1, float> asp_BN;
     // Flatten()
     float flatten_x[16 * 2];
     Dense<16 * 2, 6, float> fc;

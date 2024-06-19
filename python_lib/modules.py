@@ -287,7 +287,7 @@ class AttentiveStatisticsPooling(nn.Module):
             mean, std = _compute_statistics(x, mask / total)
             mean = mean.unsqueeze(2).repeat(1, 1, L)
             std = std.unsqueeze(2).repeat(1, 1, L)
-            attn = torch.cat([x, mean, std], dim=1)
+            attn = torch.cat([x, mean, std], dim=1)  # Append on the channel
         else:
             attn = x
 
@@ -295,6 +295,7 @@ class AttentiveStatisticsPooling(nn.Module):
         attn = self.conv(self.tanh(self.tdnn(attn)))
 
         # Filter out zero-paddings
+        # This is redundant here as mask is never 0
         attn = attn.masked_fill(mask == 0, float("-inf"))
 
         attn = F.softmax(attn, dim=2)

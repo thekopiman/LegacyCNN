@@ -19,6 +19,8 @@ void ECAPA_TDNN::forward(float (&input)[2][64], float (&y)[6])
     }
 
     mfa.forward(x_cat, y0);
-    // Error here
-    // asp.forward(y0,)
+    asp.forward(y0, y1);
+    asp_BN.forward(y1, y1);
+    MatrixFunctions::Flatten(y1, flatten_x);
+    fc.forward(flatten_x, y);
 };

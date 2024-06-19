@@ -213,6 +213,22 @@ public:
         }
     }
 
+    // Clamp - min only
+    template <size_t dim1, size_t dim2, typename T>
+    static void Clamp(T (&input)[dim1][dim2], T min)
+    {
+        for (int i = 0; i < dim1; i++)
+        {
+            for (int j = 0; j < dim2; j++)
+            {
+                if (input[i][j] < min)
+                {
+                    input[i][j] = min;
+                }
+            }
+        }
+    }
+
     // Clamp
     template <size_t dim1, typename T>
     static void Clamp(T (&input)[dim1], T min, T max)

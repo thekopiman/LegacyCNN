@@ -182,6 +182,7 @@ void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width,
         std::cout << std::endl;
     }
 };
+
 template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
 
 void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::forward(T (&input)[channel_in][input_width], T (&output)[channel_out][out_dim])
@@ -253,5 +254,94 @@ void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width,
                 this->empty_input[i][j + pad / 2] = input[i][j];
             }
         }
+    }
+};
+
+template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
+
+void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::setWeights(std::ifstream &infile, bool displayWeights)
+{
+    if (!infile)
+    {
+        std::cout << "Error opening file!" << std::endl;
+        return;
+    }
+    // Read dimensions
+    int dim1, dim2, dim3;
+    infile.read(reinterpret_cast<char *>(&dim1), sizeof(int));
+    infile.read(reinterpret_cast<char *>(&dim2), sizeof(int));
+    infile.read(reinterpret_cast<char *>(&dim3), sizeof(int));
+
+    // Sanity Check
+    assert(dim1 == channel_out);
+    assert(dim2 == channel_in);
+    assert(dim3 == kernel);
+
+    // Calculate total size
+    int total_size = dim1 * dim2 * dim3;
+
+    // Read flattened array
+    infile.read(reinterpret_cast<char *>(this->flat_matrix), total_size * sizeof(T));
+
+    for (int i = 0; i < dim1; ++i)
+    {
+        for (int j = 0; j < dim2; ++j)
+        {
+            for (int k = 0; k < dim3; ++k)
+            {
+                this->matrix[i][j][k] = (T)this->flat_matrix[i * dim2 * dim3 + j * dim3 + k];
+            }
+        }
+    }
+
+    // Output to verify correctness
+    if (displayWeights)
+    {
+        std::cout << "Read 3D array dimensions: (" << dim1 << ", " << dim2 << ", " << dim3 << ")\n";
+        for (int i = 0; i < dim1; ++i)
+        {
+            for (int j = 0; j < dim2; ++j)
+            {
+                for (int k = 0; k < dim3; ++k)
+                {
+                    std::cout << this->matrix[i][j][k] << " ";
+                }
+                std::cout << std::endl;
+            }
+            std::cout << std::endl;
+        }
+    }
+};
+template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
+
+void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::setBias(std::ifstream &infile, bool displayBias)
+{
+    if (!infile)
+    {
+        std::cout << "Error opening file!" << std::endl;
+        return;
+    }
+    // Read dimensions
+    int dim1;
+    infile.read(reinterpret_cast<char *>(&dim1), sizeof(int));
+
+    // Sanity Check
+    assert(dim1 == channel_out);
+
+    // Calculate total size
+    int total_size = dim1;
+
+    // Read flattened array
+    infile.read(reinterpret_cast<char *>(this->bias), total_size * sizeof(T));
+
+    // Output to verify correctness
+    if (displayBias)
+    {
+        std::cout << "Read 3D array dimensions: (" << dim1 << ")\n";
+        for (int i = 0; i < dim1; ++i)
+        {
+            std::cout << this->bias[i] << " ";
+        }
+        std::cout << std::endl;
     }
 };

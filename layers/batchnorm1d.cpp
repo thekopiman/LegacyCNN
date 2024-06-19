@@ -79,6 +79,51 @@ void BatchNorm1d<channel, width, T>::setBeta(std::string filename)
 };
 
 template <int channel, int width, typename T>
+void BatchNorm1d<channel, width, T>::setGamma(std::ifstream &infile)
+{
+    if (!infile)
+    {
+        std::cout << "Error opening file!" << std::endl;
+        return;
+    }
+    // Read dimensions
+    int dim1;
+    infile.read(reinterpret_cast<char *>(&dim1), sizeof(int));
+
+    // Sanity Check
+    assert(dim1 == channel);
+
+    // Calculate total size
+    int total_size = dim1;
+
+    // Read flattened array
+    infile.read(reinterpret_cast<char *>(this->gamma), total_size * sizeof(T));
+};
+
+template <int channel, int width, typename T>
+void BatchNorm1d<channel, width, T>::setBeta(std::ifstream &infile)
+{
+    if (!infile)
+    {
+        std::cout << "Error opening file!" << std::endl;
+        return;
+    }
+    // Read dimensions
+    int dim1;
+    infile.read(reinterpret_cast<char *>(&dim1), sizeof(int));
+
+    // Sanity Check
+    assert(dim1 == channel);
+
+    // Calculate total size
+    int total_size = dim1;
+
+    // Read flattened array
+    infile.read(reinterpret_cast<char *>(this->beta), total_size * sizeof(T));
+    infile.close();
+};
+
+template <int channel, int width, typename T>
 void BatchNorm1d<channel, width, T>::setEps(T var)
 {
     this->eps = var;

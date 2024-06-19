@@ -3,7 +3,7 @@ import numpy as np
 import os
 
 
-class SaveAsByte:
+class SaveAsBin:
     def __init__(self, layer, layername, dirpath):
         self.layer = layer
         self.layername = layername
@@ -45,3 +45,48 @@ class SaveAsByte:
     def saveBoth(self):
         self.saveBias()
         self.saveWeights()
+
+
+class BlockSave:
+    def __init__(self, layers: list, blockname: str, dirpath):
+        self.layers = layers
+        self.blockname = blockname
+        self.dirpath = dirpath
+
+        if not os.path.exists(dirpath):
+            os.makedirs(dirpath)
+
+    def save(self):
+        """
+        We will save in this format
+        layers[0] dimension - weights
+        layers[0] weights
+        layers[0] dimension - bias
+        layers[0] bias
+        layers[1] dimension - weights
+        layers[1] weights
+        layers[1] dimension - bias
+        layers[1] bias
+        etc
+        ...
+
+        """
+        with open(os.path.join(self.dirpath, f"{self.blockname}.bin"), "wb") as f:
+            for layer in self.layers:
+                # Weights
+                weights = layer.weight.cpu().detach().numpy()
+                weight_dim = weights.shape
+                flatten_weights = weights.flatten()
+
+                # Write to bin file (weights)
+                f.write(np.array(weight_dim, dtype=np.int32).tobytes())
+                f.write(flatten_weights.tobytes())
+
+                # Bias
+                bias = layer.bias.cpu().detach().numpy()
+                bias_dim = bias.shape
+                flatten_bias = bias.flatten()
+
+                # Write to bin file (bias)
+                f.write(np.array(bias_dim, dtype=np.int32).tobytes())
+                f.write(flatten_bias.tobytes())

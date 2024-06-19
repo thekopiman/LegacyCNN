@@ -13,6 +13,8 @@ from speechbrain.nnet.CNN import Conv1d as _Conv1d
 from speechbrain.nnet.linear import Linear
 from speechbrain.nnet.normalization import BatchNorm1d as _BatchNorm1d
 
+from .saveasfile import SaveAsBin
+
 
 # Skip transpose as much as possible for efficiency
 class Conv1d(_Conv1d):
@@ -21,12 +23,18 @@ class Conv1d(_Conv1d):
     def __init__(self, *args, **kwargs):
         super().__init__(skip_transpose=True, *args, **kwargs)
 
+    def return_layers(self) -> list:
+        return [self.conv]
+
 
 class BatchNorm1d(_BatchNorm1d):
     """1D batch normalization. Skip transpose is used to improve efficiency."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(skip_transpose=True, *args, **kwargs)
+
+    def return_layers(self) -> list:
+        return [self.norm]
 
 
 # class Cat(torch.cat):
@@ -99,6 +107,10 @@ class TDNNBlock(nn.Module):
         y = self.norm(x)
         return y
 
+    # Extract the elementary nn.Modules layers
+    def return_layers(self) -> list:
+        return [self.conv.conv, self.norm.norm]
+
 
 class Res2NetBlock(torch.nn.Module):
     """An implementation of Res2NetBlock w/ dilation.
@@ -160,6 +172,12 @@ class Res2NetBlock(torch.nn.Module):
         y = torch.cat(y, dim=1)
         return y
 
+    def return_layers(self) -> list:
+        lst = []
+        for i in self.blocks:
+            lst += i.return_layers()
+        return lst
+
 
 class SEBlock(nn.Module):
     """An implementation of squeeze-and-excitation block.
@@ -210,6 +228,9 @@ class SEBlock(nn.Module):
         s = self.sigmoid(self.conv2(s))
 
         return s * x
+
+    def return_layers(self) -> list:
+        return [self.conv1.conv, self.conv2.conv]
 
 
 class AttentiveStatisticsPooling(nn.Module):
@@ -306,6 +327,9 @@ class AttentiveStatisticsPooling(nn.Module):
 
         return pooled_stats
 
+    def return_layers(self) -> list:
+        return self.tdnn.return_layers() + [self.conv.conv]
+
 
 class SERes2NetBlock(nn.Module):
     """An implementation of building block in ECAPA-TDNN, i.e.,
@@ -393,6 +417,15 @@ class SERes2NetBlock(nn.Module):
         x = self.se_block(x, lengths)
 
         return x + residual
+
+    def return_layers(self) -> list:
+        lst = []
+        lst += self.tdnn1.return_layers()
+        lst += self.res2net_block.return_layers()
+        lst += self.se_block.return_layers()
+        if self.shortcut is not None:
+            lst += self.shortcut.return_layers()
+        return lst
 
 
 class ECAPA_TDNN(torch.nn.Module):
@@ -564,6 +597,17 @@ class ECAPA_TDNN(torch.nn.Module):
         # x = x.transpose(1, 2)
         x = F.softmax(x, dim=1)
         return x
+
+    def return_layers(self):
+        lst = []
+        for i in self.blocks:
+            lst += i.return_layers()
+
+        lst += self.mfa.return_layers()
+        lst += self.asp.return_layers()
+        lst += self.asp_bn.return_layers()
+        lst += [self.final[1]]
+        return lst
 
 
 class Classifier(torch.nn.Module):

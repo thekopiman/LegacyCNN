@@ -16,11 +16,13 @@ public:
     void setGamma(T (&new_gamma)[channel]);
     void setBeta(T (&new_beta)[channel]);
 
-    // Overloading
+    // Overloading - pathname
     void setGamma(std::string filename);
-
-    // Overloading
     void setBeta(std::string filename);
+
+    // Overloading - infile
+    void setGamma(std::ifstream &infile);
+    void setBeta(std::ifstream &infile);
 
     void setEps(T var);
     void forward(T (&input)[channel][width], T (&output)[channel][width]);

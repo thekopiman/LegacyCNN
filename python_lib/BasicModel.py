@@ -1,7 +1,7 @@
 import torch
 import torch.nn.functional as F
 import torch.nn as nn
-from .saveasfile import SaveAsByte
+from .saveasfile import SaveAsBin
 
 
 # class InputTransform:
@@ -78,17 +78,17 @@ class BasicModel(torch.nn.Module):
         return z
 
     def save(self, dirpath=""):
-        layer0_conv = SaveAsByte(self.layer0[0], "layer0_conv", dirpath)
-        layer0_bn = SaveAsByte(self.layer0[2], "layer0_bn", dirpath)
-        layer1_conv = SaveAsByte(self.layer1[0], "layer1_conv", dirpath)
-        layer1_bn = SaveAsByte(self.layer1[2], "layer1_bn", dirpath)
-        layer2_conv = SaveAsByte(self.layer2[0], "layer2_conv", dirpath)
-        layer2_bn = SaveAsByte(self.layer2[2], "layer2_bn", dirpath)
-        layer3_conv = SaveAsByte(self.layer3[0], "layer3_conv", dirpath)
-        layer3_bn = SaveAsByte(self.layer3[2], "layer3_bn", dirpath)
-        layer4_conv = SaveAsByte(self.layer4[0], "layer4_conv", dirpath)
-        layer4_bn = SaveAsByte(self.layer4[2], "layer4_bn", dirpath)
-        final_fc = SaveAsByte(self.final[1], "final_fc", dirpath)
+        layer0_conv = SaveAsBin(self.layer0[0], "layer0_conv", dirpath)
+        layer0_bn = SaveAsBin(self.layer0[2], "layer0_bn", dirpath)
+        layer1_conv = SaveAsBin(self.layer1[0], "layer1_conv", dirpath)
+        layer1_bn = SaveAsBin(self.layer1[2], "layer1_bn", dirpath)
+        layer2_conv = SaveAsBin(self.layer2[0], "layer2_conv", dirpath)
+        layer2_bn = SaveAsBin(self.layer2[2], "layer2_bn", dirpath)
+        layer3_conv = SaveAsBin(self.layer3[0], "layer3_conv", dirpath)
+        layer3_bn = SaveAsBin(self.layer3[2], "layer3_bn", dirpath)
+        layer4_conv = SaveAsBin(self.layer4[0], "layer4_conv", dirpath)
+        layer4_bn = SaveAsBin(self.layer4[2], "layer4_bn", dirpath)
+        final_fc = SaveAsBin(self.final[1], "final_fc", dirpath)
 
         layer0_conv.saveBoth()
         layer1_conv.saveBoth()

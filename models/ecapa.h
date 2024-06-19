@@ -2,6 +2,8 @@
 #define ecapatdnnmodel_h
 
 #include <iostream>
+#include <string>
+#include <assert.h>
 
 #include "../layers/conv1d.h"
 #include "../layers/dense.h"
@@ -21,7 +23,7 @@ public:
     ECAPA_TDNN();
     ~ECAPA_TDNN();
     void forward(float (&input)[2][64], float (&y)[6]);
-    void loadweights();
+    void loadweights(std::string pathname);
 
 private:
     TDNNBlock<5, 1, 2, 8, 1, 64, 64, 4, float> initiallayer;

@@ -7,6 +7,7 @@
 #include "../utils/matrixfunctions.h"
 #include "batchnorm1d.h"
 #include <string>
+#include <fstream>
 
 // kernel, stride, channel_in, channel_out, dilation, input_width, out_dim, input_pad, T
 //
@@ -34,6 +35,14 @@ public:
     void setBias_layer0(std::string pathname, bool displayBias);
     void setGamma_layer1(std::string pathname);
     void setBeta_layer1(std::string pathname);
+
+    // Set weights from infile via overloading
+    void setWeights_layer0(std::ifstream &infile, bool displayWeights);
+    void setBias_layer0(std::ifstream &infile, bool displayBias);
+    void setGamma_layer1(std::ifstream &infile);
+    void setBeta_layer1(std::ifstream &infile);
+
+    void setWeights_full(std::string pathname);
 
     // Get Output
     void forward(T (&input)[channel_in][input_width], T (&output)[channel_out][out_dim]);

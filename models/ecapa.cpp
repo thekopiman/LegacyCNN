@@ -40,3 +40,8 @@ ECAPA_TDNN::ECAPA_TDNN()
 
 ECAPA_TDNN::~ECAPA_TDNN() {
 };
+
+void ECAPA_TDNN::loadweights(std::string pathname)
+{
+    assert(false && "Not completed");
+};

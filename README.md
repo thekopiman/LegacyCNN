@@ -54,7 +54,7 @@ Add another method called `save` within the model to allow for the weights to be
 
 ```
 def save(self, dirpath=""):
-        layer0_conv = SaveAsByte(self.layer0[0], "layer0_conv", dirpath)
+        layer0_conv = SaveAsBin(self.layer0[0], "layer0_conv", dirpath)
         ...
 
         layer0_conv.saveBoth()

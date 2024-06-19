@@ -27,9 +27,11 @@ public:
 
 	// Overloading from filename
 	void setWeights(std::string filename, bool displayWeights);
-
-	// Overloading from filename
 	void setBias(std::string filename, bool displayBias);
+
+	// Overloading from infile
+	void setWeights(std::ifstream &infile, bool displayWeights);
+	void setBias(std::ifstream &infile, bool displayBias);
 
 	void forward(T (&input)[channel_in][input_width], T (&output)[channel_out][out_dim]);
 

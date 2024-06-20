@@ -40,7 +40,8 @@ private:
     float y0[16][64];
     ASP<16, 128, 64, 2, float> asp;
     float y1[32][1];
-    BatchNorm1d<16 * 2, 1, float> asp_BN;
+    // ASP BN is removed
+    // BatchNorm1d<16 * 2, 1, float> asp_BN;
     // Flatten()
     float flatten_x[16 * 2];
     Dense<16 * 2, 6, float> fc;

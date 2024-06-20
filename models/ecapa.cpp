@@ -25,8 +25,7 @@ void ECAPA_TDNN::forward(float (&input)[2][64], float (&y)[6])
 
     asp.forward(y0, y1);
 
-    Helper::print(y1);
-
+    // ASP BN is removed
     // asp_BN.forward(y1, y1);
 
     MatrixFunctions::Flatten(y1, flatten_x);

@@ -230,7 +230,7 @@ void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width,
 {
     for (int i = 0; i < channel_in; i++)
     {
-        // Left Pad
+        // Left Pad (with 0)
         if (padding_mode == 1)
         {
             for (int j = 0; j < input_width; j++)
@@ -238,7 +238,7 @@ void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width,
                 this->empty_input[i][j + pad] = input[i][j];
             }
         }
-        // Right Pad
+        // Right Pad (with 0)
         else if (padding_mode == 2)
         {
             for (int j = 0; j < input_width; j++)
@@ -246,7 +246,29 @@ void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width,
                 this->empty_input[i][j] = input[i][j];
             }
         }
-        // Normal Pad
+        // Reflect Pad - at both sides
+        else if (padding_mode == 3)
+        {
+            // Perform normal pad first
+            for (int j = 0; j < input_width; j++)
+            {
+                this->empty_input[i][j + pad / 2] = input[i][j];
+            }
+
+            // Reflect left side
+            for (int j = 0; j < pad / 2; j++)
+            {
+                this->empty_input[i][pad / 2 - j - 1] = input[i][j + 1];
+            }
+
+            // Reflect right side
+            for (int j = 0; j < pad / 2; j++)
+            {
+                this->empty_input[i][input_width + pad / 2 + j] = input[i][input_width - j - 2];
+            }
+        }
+
+        // Normal Pad (with 0) - at both sides
         else
         {
             for (int j = 0; j < input_width; j++)
@@ -266,11 +288,15 @@ void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width,
         std::cout << "Error opening file!" << std::endl;
         return;
     }
+
     // Read dimensions
     int dim1, dim2, dim3;
     infile.read(reinterpret_cast<char *>(&dim1), sizeof(int));
     infile.read(reinterpret_cast<char *>(&dim2), sizeof(int));
     infile.read(reinterpret_cast<char *>(&dim3), sizeof(int));
+
+    // std::cout << dim1 << " " << dim2 << " " << dim3 << std::endl;
+    // std::cout << channel_out << std::endl;
 
     // Sanity Check
     assert(dim1 == channel_out);
@@ -344,4 +370,42 @@ void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width,
         }
         std::cout << std::endl;
     }
+};
+
+template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
+
+void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::printempty_input()
+{
+    for (int i = 0; i < channel_in; i++)
+    {
+        for (int j = 0; j < input_width + pad; j++)
+        {
+            std::cout << empty_input[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+}
+template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
+
+void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::setWeights_full(std::string pathname)
+{
+    std::ifstream infile(pathname, std::ios::binary);
+    if (!infile)
+    {
+        std::cout << "Error opening file!" << std::endl;
+        return;
+    }
+
+    setWeights(infile);
+    setBias(infile);
+
+    infile.close();
+};
+template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
+
+void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::setWeights_full(std::ifstream &infile)
+{
+    setWeights(infile, false);
+    setBias(infile, false);
 };

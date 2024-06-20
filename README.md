@@ -1,6 +1,8 @@
 # LegacyCNN
 
-Libraries to integrate CNN models into legacy C++ systems without using Torchscript
+Libraries to integrate CNN models into legacy C++ systems without using Torchscript.
+
+Also, this library requires the memory of the various layers/models to be **_allocated during compilation_**. A key factor in many embedded systems as dynamic allocation during execution (eg. malloc, calloc, etc) might lead to errors.
 
 # Important: Conv1d discrepancy
 
@@ -22,7 +24,7 @@ layer = Conv1d(
         )
 ```
 
-Then, a basic `F.pad(x, (p, 0))` (Left pad) will be applied to the input before `matmul`. The value of p is selected such that the output dimension is equal to the input dimension.
+Then, a `F.pad(x, (p/2, p/2), "reflect)` will be applied to the input before convolution. The value of p is selected such that the output dimension is equal to the input dimension.
 
 Likewise, the other layers utilised by speechbrain models (eg. `Conv2d`) are different as well. However, this repo will not replicate them. Only `Conv1d` will be replicated in C++.
 

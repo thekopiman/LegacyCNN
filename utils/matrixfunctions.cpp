@@ -181,6 +181,15 @@ void MatrixFunctions::Mean(T (&input)[dim1][dim2], T (&output)[dim1])
         output[i] = Sum(input[i]) / dim2;
     }
 }
+template <size_t dim1, size_t dim2, size_t dim3, typename T>
+void MatrixFunctions::Mean(T (&input)[dim1][dim2], T (&output)[dim1][dim3])
+{
+    assert(dim3 == 1);
+    for (int i = 0; i < dim1; i++)
+    {
+        output[i][0] = Sum(input[i]) / dim2;
+    }
+}
 
 // Clamp
 template <size_t dim1, size_t dim2, typename T>
@@ -283,3 +292,14 @@ void MatrixFunctions::Std(T (&input)[dim1][dim2], T (&output)[dim1])
         output[c] = std::sqrt(Clamp(variance[c], eps));
     }
 }
+
+// Reshape
+template <size_t dim1, size_t dim2, typename T>
+void MatrixFunctions::Reshape(T (&input)[dim1][dim2], T (&output)[dim1])
+{
+    assert(dim2 == 1);
+    for (int i = 0; i < dim1; i++)
+    {
+        output[i] = input[i][0];
+    }
+};

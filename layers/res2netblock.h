@@ -18,6 +18,9 @@ public:
     void resetTemp();
     void printTemp();
     ~Res2NetBlock();
+    void loadweights(std::string pathname);
+    void loadweights(std::ifstream &infile);
+    void printBlockParameters();
 
 private:
     TDNNBlock<kernel, 1, channel_in / scale, channel_out / scale, dilation, input_width, out_dim, input_pad, T> blocks[scale - 1];

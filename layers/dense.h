@@ -16,11 +16,17 @@ public:
 
     void setBias(T (&new_bias)[output_dim]);
 
-    // Overloading
+    // Overloading - filename
     void setBias(std::string filename);
-
-    // Overloading
     void setWeights(std::string filename, bool displayWeights);
+    void setWeights_full(std::string filename);
+
+    // Overloading - infile
+    void setBias(std::ifstream &infile);
+    void setWeights(std::ifstream &infile, bool displayWeights);
+
+    // Overloading - infile full
+    void setWeights_full(std::ifstream &infile);
 
     void forward(T (&input)[input_dim], T (&output)[output_dim]);
 

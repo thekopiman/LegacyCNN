@@ -4,6 +4,9 @@ template <int channels, int attention_channels, int input_width, int out_dim, ty
 ASP<channels, attention_channels, input_width, out_dim, T>::ASP(){};
 
 template <int channels, int attention_channels, int input_width, int out_dim, typename T>
+ASP<channels, attention_channels, input_width, out_dim, T>::~ASP(){};
+
+template <int channels, int attention_channels, int input_width, int out_dim, typename T>
 void ASP<channels, attention_channels, input_width, out_dim, T>::forward(T (&input)[channels][input_width], T (&output)[channels * 2][1])
 {
     MatrixFunctions::Mean(input, this->mean);
@@ -69,3 +72,26 @@ void ASP<channels, attention_channels, input_width, out_dim, T>::compute_statist
         this->std[i] = std::sqrt(this->std[i]);
     }
 }
+
+template <int channels, int attention_channels, int input_width, int out_dim, typename T>
+void ASP<channels, attention_channels, input_width, out_dim, T>::loadweights(std::string pathname)
+{
+    std::ifstream infile(pathname, std::ios::binary);
+    if (!infile)
+    {
+        std::cout << "Error opening file!" << std::endl;
+        return;
+    }
+
+    tdnn.setWeights_full(infile);
+    conv.setWeights_full(infile);
+
+    infile.close();
+};
+
+template <int channels, int attention_channels, int input_width, int out_dim, typename T>
+void ASP<channels, attention_channels, input_width, out_dim, T>::loadweights(std::ifstream &infile)
+{
+    tdnn.setWeights_full(infile);
+    conv.setWeights_full(infile);
+};

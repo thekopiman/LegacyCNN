@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <assert.h>
+#include <fstream>
 
 #include "../layers/conv1d.h"
 #include "../layers/dense.h"

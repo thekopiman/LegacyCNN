@@ -43,9 +43,13 @@ public:
     void setBeta_layer1(std::ifstream &infile);
 
     void setWeights_full(std::string pathname);
+    void setWeights_full(std::ifstream &infile);
 
     // Get Output
     void forward(T (&input)[channel_in][input_width], T (&output)[channel_out][out_dim]);
+
+    // Print Block parameters
+    void printparameters();
 
     ~TDNNBlock();
 

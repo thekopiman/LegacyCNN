@@ -9,6 +9,7 @@
 #include <string>
 #include <assert.h>
 #include <limits>
+#include <fstream>
 
 // We assume global_context = True and Lengths = None
 template <int channels, int attention_channels, int input_width, int out_dim, typename T>
@@ -17,6 +18,9 @@ class ASP
 public:
     ASP();
     void forward(T (&input)[channels][input_width], T (&output)[channels * 2][1]);
+    ~ASP();
+    void loadweights(std::string pathname);
+    void loadweights(std::ifstream &infile);
 
 private:
     TDNNBlock<1, 1, channels * 3, attention_channels, 1, input_width, input_width, 0, T> tdnn;

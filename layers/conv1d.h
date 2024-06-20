@@ -10,8 +10,8 @@
 //
 // out_dim = (input_width + 2*pad - dilation*(kernel - 1) - 1)/stride + 1
 // Padding mode
-// 0 : Normal padding (at both sides), 1 : Left Pad, 2: Right Pad
-// For Normal padding make sure you allocate x2 since padding will be (p/2, p/2)
+// 0 : Normal padding (at both sides), 1 : Left Pad, 2: Right Pad, 3: Reflect pad
+// For Normal padding & Reflect make sure you allocate x2 since padding will be (p/2, p/2)
 template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
 class Conv1d
 {
@@ -33,7 +33,13 @@ public:
 	void setWeights(std::ifstream &infile, bool displayWeights);
 	void setBias(std::ifstream &infile, bool displayBias);
 
+	// Set weights full
+	void setWeights_full(std::string filename);
+	void setWeights_full(std::ifstream &infile);
+
 	void forward(T (&input)[channel_in][input_width], T (&output)[channel_out][out_dim]);
+
+	void printempty_input();
 
 	~Conv1d();
 

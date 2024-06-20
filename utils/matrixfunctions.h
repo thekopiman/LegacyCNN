@@ -58,6 +58,8 @@ public:
     // Mean will be based on dim2
     template <size_t dim1, size_t dim2, typename T>
     static void Mean(T (&input)[dim1][dim2], T (&output)[dim1]);
+    template <size_t dim1, size_t dim2, size_t dim3, typename T>
+    static void Mean(T (&input)[dim1][dim2], T (&output)[dim1][dim3]);
 
     // Clamp
     template <size_t dim1, size_t dim2, typename T>
@@ -78,6 +80,10 @@ public:
     // Obtain std
     template <size_t dim1, size_t dim2, typename T>
     static void Std(T (&input)[dim1][dim2], T (&output)[dim1]);
+
+    // Reshape
+    template <size_t dim1, size_t dim2, typename T>
+    static void Reshape(T (&input)[dim1][dim2], T (&output)[dim1]);
 };
 
 #include "matrixfunctions.cpp"

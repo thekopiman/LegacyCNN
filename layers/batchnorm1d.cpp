@@ -120,7 +120,6 @@ void BatchNorm1d<channel, width, T>::setBeta(std::ifstream &infile)
 
     // Read flattened array
     infile.read(reinterpret_cast<char *>(this->beta), total_size * sizeof(T));
-    infile.close();
 };
 
 template <int channel, int width, typename T>

@@ -23,10 +23,15 @@ void ECAPA_TDNN::forward(float (&input)[2][64], float (&y)[6])
 
     mfa.forward(x_cat, y0);
 
-    // ASP has errors
     asp.forward(y0, y1);
 
-    asp_BN.forward(y1, y1);
+    for (int i = 0; i < 24; i++)
+    {
+        std::cout << y1[i][0] << " ";
+        // std::cout << std::endl;
+    }
+
+    // asp_BN.forward(y1, y1);
 
     MatrixFunctions::Flatten(y1, flatten_x);
 
@@ -43,5 +48,41 @@ ECAPA_TDNN::~ECAPA_TDNN() {
 
 void ECAPA_TDNN::loadweights(std::string pathname)
 {
-    assert(false && "Not completed");
+    std::ifstream infile(pathname, std::ios::binary);
+    if (!infile)
+    {
+        std::cout << "Error opening file!" << std::endl;
+        return;
+    }
+
+    // Initial Layer
+    initiallayer.setWeights_full(infile);
+    std::cout << "Initial Layer Loaded" << std::endl;
+
+    // Seres
+    seres_1.loadweights(infile);
+    std::cout << "SERES 1 Loaded" << std::endl;
+    seres_2.loadweights(infile);
+    std::cout << "SERES 2 Loaded" << std::endl;
+    seres_3.loadweights(infile);
+    std::cout << "SERES 3 Loaded" << std::endl;
+
+    // mfa
+    mfa.setWeights_full(infile);
+    std::cout << "mfa Loaded" << std::endl;
+
+    // asp
+    asp.loadweights(infile);
+    std::cout << "asp Loaded" << std::endl;
+
+    // asp bn - Removed as Batch = 1
+    // asp_BN.setGamma(infile);
+    // asp_BN.setBeta(infile);
+    // std::cout << "asp bn Loaded" << std::endl;
+
+    // fc
+    fc.setWeights_full(infile);
+    std::cout << "fc Loaded" << std::endl;
+
+    infile.close();
 };

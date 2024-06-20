@@ -2,11 +2,7 @@
 #include <fstream>
 
 template <int kernel, int stride, int channel_in, int channel_out, int dilation, int input_width, int out_dim, int input_pad, typename T>
-TDNNBlock<kernel, stride, channel_in, channel_out, dilation, input_width, out_dim, input_pad, T>::TDNNBlock() : layer0(1){
-                                                                                                                    // std::cout << "TDNNBlock initialised" << std::endl;
-                                                                                                                    // setWeights_layer0("ECAPAweights/test_weights.bin", false);
-                                                                                                                    // setBias_layer0("ECAPAweights/test_bias.bin", false);
-                                                                                                                };
+TDNNBlock<kernel, stride, channel_in, channel_out, dilation, input_width, out_dim, input_pad, T>::TDNNBlock() : layer0(3){};
 
 template <int kernel, int stride, int channel_in, int channel_out, int dilation, int input_width, int out_dim, int input_pad, typename T>
 TDNNBlock<kernel, stride, channel_in, channel_out, dilation, input_width, out_dim, input_pad, T>::~TDNNBlock(){};
@@ -116,3 +112,24 @@ void TDNNBlock<kernel, stride, channel_in, channel_out, dilation, input_width, o
 
     infile.close();
 };
+
+template <int kernel, int stride, int channel_in, int channel_out, int dilation, int input_width, int out_dim, int input_pad, typename T>
+void TDNNBlock<kernel, stride, channel_in, channel_out, dilation, input_width, out_dim, input_pad, T>::setWeights_full(std::ifstream &infile)
+{
+    setWeights_layer0(infile, false);
+    setBias_layer0(infile, false);
+    setGamma_layer1(infile);
+    setBeta_layer1(infile);
+};
+
+template <int kernel, int stride, int channel_in, int channel_out, int dilation, int input_width, int out_dim, int input_pad, typename T>
+void TDNNBlock<kernel, stride, channel_in, channel_out, dilation, input_width, out_dim, input_pad, T>::printparameters()
+{
+    std::cout << "kernel " << kernel << std::endl;
+    std::cout << "stride " << stride << std::endl;
+    std::cout << "channel_in " << channel_in << std::endl;
+    std::cout << "channel_out " << channel_out << std::endl;
+    std::cout << "dilation " << dilation << std::endl;
+    std::cout << "input_pad " << input_pad << std::endl;
+    // std::cout << "Kernel " << kernel << std::endl;
+}

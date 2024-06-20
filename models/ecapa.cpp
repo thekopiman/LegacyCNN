@@ -25,11 +25,7 @@ void ECAPA_TDNN::forward(float (&input)[2][64], float (&y)[6])
 
     asp.forward(y0, y1);
 
-    for (int i = 0; i < 24; i++)
-    {
-        std::cout << y1[i][0] << " ";
-        // std::cout << std::endl;
-    }
+    Helper::print(y1);
 
     // asp_BN.forward(y1, y1);
 

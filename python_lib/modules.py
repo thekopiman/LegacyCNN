@@ -315,6 +315,7 @@ class AttentiveStatisticsPooling(nn.Module):
         else:
             attn = x
 
+        # print(attn)
         # Apply layers
         attn = self.conv(self.tanh(self.tdnn(attn)))
 

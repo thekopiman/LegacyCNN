@@ -12,6 +12,7 @@
 #include <fstream>
 
 // We assume global_context = True and Lengths = None
+// channels, attention_channels, input_width, out_dim, T
 template <int channels, int attention_channels, int input_width, int out_dim, typename T>
 class ASP
 {

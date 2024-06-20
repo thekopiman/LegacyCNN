@@ -5,20 +5,7 @@ void ActivationFunctions::Softmax(T (&input)[rows][cols])
 {
     for (int i = 0; i < rows; i++)
     {
-        for (int j = 0; j < cols; j++)
-        {
-            input[i][j] = (T)exp((double)input[i][j]); // Need to up/downcast to double for exp. Subsequently, it will be down/up cast
-        }
-    }
-
-    T sumAll = MatrixFunctions::Sum(input);
-
-    for (int i = 0; i < rows; i++)
-    {
-        for (int j = 0; j < cols; j++)
-        {
-            input[i][j] /= sumAll;
-        }
+        Softmax(input[i]);
     }
 };
 

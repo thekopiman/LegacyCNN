@@ -35,3 +35,27 @@ void Helper::readInputs(std::string filename, T (&inputs)[rows][cols])
         }
     }
 }
+
+template <size_t dim1, typename T>
+void Helper::print(T (&input)[dim1])
+{
+    for (int i = 0; i < dim1; i++)
+    {
+        std::cout << input[i] << " ";
+    }
+    std::cout << std::endl;
+};
+
+template <size_t dim1, size_t dim2, typename T>
+void Helper::print(T (&input)[dim1][dim2])
+{
+    for (int i = 0; i < dim1; i++)
+    {
+        for (int j = 0; j < dim2; j++)
+        {
+            std::cout << input[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+};

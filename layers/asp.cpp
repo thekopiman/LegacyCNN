@@ -23,6 +23,8 @@ void ASP<channels, attention_channels, input_width, out_dim, T>::forward(T (&inp
         }
     }
 
+    // Helper::print(this->attn);
+
     // apply layers
     this->tdnn.forward(this->attn, this->attn1);
     ActivationFunctions::Tanh(this->attn1);
@@ -30,7 +32,11 @@ void ASP<channels, attention_channels, input_width, out_dim, T>::forward(T (&inp
 
     // Filter out zero-paddings is redundant here
 
+    // Helper::print(this->attn2);
+
     ActivationFunctions::Softmax(this->attn2);
+
+    // Helper::print(this->attn2);
 
     // Obtain Pooled statistics
     compute_statistics(input, attn2);

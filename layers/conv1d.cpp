@@ -388,7 +388,7 @@ void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width,
 }
 template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
 
-void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::setWeights_full(std::string pathname)
+void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::loadweights(std::string pathname)
 {
     std::ifstream infile(pathname, std::ios::binary);
     if (!infile)
@@ -404,8 +404,13 @@ void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width,
 };
 template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
 
-void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::setWeights_full(std::ifstream &infile)
+void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::loadweights(std::ifstream &infile)
 {
+    if (!infile)
+    {
+        std::cout << "Error opening file!" << std::endl;
+        return;
+    }
     setWeights(infile, false);
     setBias(infile, false);
 };

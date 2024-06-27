@@ -43,13 +43,13 @@ void SERes2NetBlock<kernel, channel_in, channel_out, dilation, input_width, out_
         return;
     }
 
-    tdnn1.setWeights_full(infile);
+    tdnn1.loadweights(infile);
     res2net.loadweights(infile);
-    tdnn2.setWeights_full(infile);
+    tdnn2.loadweights(infile);
     seblock.loadweights(infile);
     if (channel_in != channel_out)
     {
-        shortcut.setWeights_full(infile);
+        shortcut.loadweights(infile);
     }
 
     infile.close();
@@ -59,17 +59,17 @@ template <int kernel, int channel_in, int channel_out, int dilation, int input_w
 void SERes2NetBlock<kernel, channel_in, channel_out, dilation, input_width, out_dim, input_pad, res2net_scale, channel_se, T>::loadweights(std::ifstream &infile)
 {
     // std::cout << 0 << std::endl;
-    tdnn1.setWeights_full(infile);
+    tdnn1.loadweights(infile);
     // std::cout << 1 << std::endl;
     res2net.loadweights(infile);
     // std::cout << 2 << std::endl;
-    tdnn2.setWeights_full(infile);
+    tdnn2.loadweights(infile);
     // std::cout << 3 << std::endl;
     seblock.loadweights(infile);
     // std::cout << 4 << std::endl;
     if (channel_in != channel_out)
     {
-        shortcut.setWeights_full(infile);
+        shortcut.loadweights(infile);
         // std::cout << 5 << std::endl;
     }
 };

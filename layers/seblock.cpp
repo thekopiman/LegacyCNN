@@ -36,14 +36,14 @@ void SEBlock<channel_in, channel_se, channel_out, input_width, out_dim, T>::load
         std::cout << "Error opening file!" << std::endl;
         return;
     }
-    layer0.setWeights_full(infile);
-    layer1.setWeights_full(infile);
+    layer0.loadweights(infile);
+    layer1.loadweights(infile);
     infile.close();
 }
 
 template <int channel_in, int channel_se, int channel_out, int input_width, int out_dim, typename T>
 void SEBlock<channel_in, channel_se, channel_out, input_width, out_dim, T>::loadweights(std::ifstream &infile)
 {
-    layer0.setWeights_full(infile);
-    layer1.setWeights_full(infile);
+    layer0.loadweights(infile);
+    layer1.loadweights(infile);
 }

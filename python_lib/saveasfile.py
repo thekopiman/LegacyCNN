@@ -90,3 +90,25 @@ class BlockSave:
                 # Write to bin file (bias)
                 f.write(np.array(bias_dim, dtype=np.int32).tobytes())
                 f.write(flatten_bias.tobytes())
+
+                # For Batch Norm Only
+                try:
+                    # Running mean
+                    running_mean = layer.running_mean.cpu().detach().numpy()
+                    running_mean_dim = running_mean.shape
+                    flatten_running_mean = running_mean.flatten()
+
+                    # Write to bin file (running mean)
+                    f.write(np.array(running_mean_dim, dtype=np.int32).tobytes())
+                    f.write(flatten_running_mean.tobytes())
+
+                    # Running var
+                    running_var = layer.running_var.cpu().detach().numpy()
+                    running_var_dim = running_var.shape
+                    flatten_running_var = running_var.flatten()
+
+                    # Write to bin file (running var)
+                    f.write(np.array(running_var_dim, dtype=np.int32).tobytes())
+                    f.write(flatten_running_var.tobytes())
+                except AttributeError:
+                    pass

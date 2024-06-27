@@ -99,7 +99,7 @@ void Res2NetBlock<kernel, channel_in, channel_out, dilation, input_width, out_di
     for (int i = 0; i < scale - 1; i++)
     {
         // std::cout << "Current block: " << std::endl;
-        blocks[i].setWeights_full(infile);
+        blocks[i].loadweights(infile);
     }
 
     infile.close();
@@ -111,7 +111,7 @@ void Res2NetBlock<kernel, channel_in, channel_out, dilation, input_width, out_di
     for (int i = 0; i < scale - 1; i++)
     {
         // std::cout << "Current block: " << std::endl;
-        blocks[i].setWeights_full(infile);
+        blocks[i].loadweights(infile);
     }
 };
 

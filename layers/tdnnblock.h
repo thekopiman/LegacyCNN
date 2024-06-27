@@ -24,26 +24,9 @@ class TDNNBlock
 public:
     TDNNBlock();
 
-    // Set weights directly
-    void setWeights_layer0(T (&new_weights)[channel_out][channel_in][kernel]);
-    void setBias_layer0(T (&new_bias)[channel_out]);
-    void setGamma_layer1(T (&new_gamma)[channel_out]);
-    void setBeta_layer1(T (&new_beta)[channel_out]);
-
-    // Set weights from path via overloading
-    void setWeights_layer0(std::string pathname, bool displayWeights);
-    void setBias_layer0(std::string pathname, bool displayBias);
-    void setGamma_layer1(std::string pathname);
-    void setBeta_layer1(std::string pathname);
-
     // Set weights from infile via overloading
-    void setWeights_layer0(std::ifstream &infile, bool displayWeights);
-    void setBias_layer0(std::ifstream &infile, bool displayBias);
-    void setGamma_layer1(std::ifstream &infile);
-    void setBeta_layer1(std::ifstream &infile);
-
-    void setWeights_full(std::string pathname);
-    void setWeights_full(std::ifstream &infile);
+    void loadweights(std::string pathname);
+    void loadweights(std::ifstream &infile);
 
     // Get Output
     void forward(T (&input)[channel_in][input_width], T (&output)[channel_out][out_dim]);

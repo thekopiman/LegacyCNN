@@ -34,8 +34,8 @@ public:
 	void setBias(std::ifstream &infile, bool displayBias);
 
 	// Set weights full
-	void setWeights_full(std::string filename);
-	void setWeights_full(std::ifstream &infile);
+	void loadweights(std::string filename);
+	void loadweights(std::ifstream &infile);
 
 	void forward(T (&input)[channel_in][input_width], T (&output)[channel_out][out_dim]);
 

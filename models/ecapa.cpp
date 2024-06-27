@@ -25,15 +25,14 @@ void ECAPA_TDNN::forward(float (&input)[2][64], float (&y)[6])
 
     asp.forward(y0, y1);
 
-    // ASP BN is removed
-    // asp_BN.forward(y1, y1);
+    asp_BN.forward(y1, y1);
 
     MatrixFunctions::Flatten(y1, flatten_x);
 
     fc.forward(flatten_x, y);
 };
 
-ECAPA_TDNN::ECAPA_TDNN()
+ECAPA_TDNN::ECAPA_TDNN() : asp_BN(1)
 {
     std::cout << "ECAPA TDNN initialised" << std::endl;
 };
@@ -51,7 +50,7 @@ void ECAPA_TDNN::loadweights(std::string pathname)
     }
 
     // Initial Layer
-    initiallayer.setWeights_full(infile);
+    initiallayer.loadweights(infile);
     std::cout << "Initial Layer Loaded" << std::endl;
 
     // Seres
@@ -63,20 +62,19 @@ void ECAPA_TDNN::loadweights(std::string pathname)
     std::cout << "SERES 3 Loaded" << std::endl;
 
     // mfa
-    mfa.setWeights_full(infile);
+    mfa.loadweights(infile);
     std::cout << "mfa Loaded" << std::endl;
 
     // asp
     asp.loadweights(infile);
     std::cout << "asp Loaded" << std::endl;
 
-    // asp bn - Removed as Batch = 1
-    // asp_BN.setGamma(infile);
-    // asp_BN.setBeta(infile);
-    // std::cout << "asp bn Loaded" << std::endl;
+    // ASP BN
+    asp_BN.loadweights(infile);
+    std::cout << "asp bn Loaded" << std::endl;
 
     // fc
-    fc.setWeights_full(infile);
+    fc.loadweights(infile);
     std::cout << "fc Loaded" << std::endl;
 
     infile.close();

@@ -17,7 +17,7 @@ public:
     BasicCNNModel();
     ~BasicCNNModel();
     void forward(float (&input)[2][16], float (&y)[6]);
-    void loadweights();
+    void loadweights(std::string pathname);
 
 private:
     BasicBlock<3, 1, 2, 4, 0, 1, 16, 14, float> Block0;

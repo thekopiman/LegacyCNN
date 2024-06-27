@@ -19,14 +19,14 @@ public:
     // Overloading - filename
     void setBias(std::string filename);
     void setWeights(std::string filename, bool displayWeights);
-    void setWeights_full(std::string filename);
 
     // Overloading - infile
     void setBias(std::ifstream &infile);
     void setWeights(std::ifstream &infile, bool displayWeights);
 
-    // Overloading - infile full
-    void setWeights_full(std::ifstream &infile);
+    // Overloading - full
+    void loadweights(std::ifstream &infile);
+    void loadweights(std::string filename);
 
     void forward(T (&input)[input_dim], T (&output)[output_dim]);
 

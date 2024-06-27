@@ -89,8 +89,8 @@ void ASP<channels, attention_channels, input_width, out_dim, T>::loadweights(std
         return;
     }
 
-    tdnn.setWeights_full(infile);
-    conv.setWeights_full(infile);
+    tdnn.loadweights(infile);
+    conv.loadweights(infile);
 
     infile.close();
 };
@@ -98,6 +98,6 @@ void ASP<channels, attention_channels, input_width, out_dim, T>::loadweights(std
 template <int channels, int attention_channels, int input_width, int out_dim, typename T>
 void ASP<channels, attention_channels, input_width, out_dim, T>::loadweights(std::ifstream &infile)
 {
-    tdnn.setWeights_full(infile);
-    conv.setWeights_full(infile);
+    tdnn.loadweights(infile);
+    conv.loadweights(infile);
 };

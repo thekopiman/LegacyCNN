@@ -189,14 +189,14 @@ void Dense<input_dim, output_dim, T>::setBias(std::ifstream &infile)
 };
 
 template <int input_dim, int output_dim, typename T>
-void Dense<input_dim, output_dim, T>::setWeights_full(std::ifstream &infile)
+void Dense<input_dim, output_dim, T>::loadweights(std::ifstream &infile)
 {
     setWeights(infile, false);
     setBias(infile);
 };
 
 template <int input_dim, int output_dim, typename T>
-void Dense<input_dim, output_dim, T>::setWeights_full(std::string filename)
+void Dense<input_dim, output_dim, T>::loadweights(std::string filename)
 {
     std::ifstream infile(filename, std::ios::binary);
     if (!infile)

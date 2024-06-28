@@ -1,8 +1,22 @@
+/**
+ * @file conv1d.h
+ * @author Kok Chin Yi (kchinyi@dso.org.sg)
+ * @brief
+ * @version 0.1
+ * @date 2024-06-28
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
 #include "conv1d.h"
 
-template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
+template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_width, typename T>
 
-void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::init()
+/**
+ * @brief Initialization to set the parameters to default values.
+ *
+ */
+void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_width, T>::init()
 { // Initialize kernel weights to 0
     // The matrix has been automatically dilated
     for (int i = 0; i < channel_out; ++i)
@@ -33,23 +47,56 @@ void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width,
     }
 };
 
-template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
-
-Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::Conv1d()
+/**
+ * @brief Construct a new Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_width, T>::Conv1d object
+ *
+ * Set default padding mode of Normal Padding
+ *
+ * @tparam kernel
+ * @tparam stride
+ * @tparam channel_in
+ * @tparam channel_out
+ * @tparam pad
+ * @tparam dilation
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam T
+ */
+template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_width, typename T>
+Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_width, T>::Conv1d()
 {
     init();
 }
 
-template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
-
-Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::Conv1d(int mode) : padding_mode(mode)
+/**
+ * @brief Construct a new Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_width, T>::Conv1d object
+ *
+ * Padding mode:
+ * 0 - Normal padding (at both sides)
+ * 1 - Left Pad
+ * 2 - Right Pad
+ * 3 - Reflect Pad
+ *
+ * @tparam kernel
+ * @tparam stride
+ * @tparam channel_in
+ * @tparam channel_out
+ * @tparam pad
+ * @tparam dilation
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam T
+ * @param mode
+ */
+template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_width, typename T>
+Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_width, T>::Conv1d(int mode) : padding_mode(mode)
 {
     init();
 }
 
-template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
+template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_width, typename T>
 
-void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::setWeights(T (&new_weights)[channel_out][channel_in][kernel])
+void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_width, T>::setWeights(T (&new_weights)[channel_out][channel_in][kernel])
 {
     // New weights are being set
     for (int i = 0; i < channel_out; i++)
@@ -64,9 +111,9 @@ void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width,
     }
 };
 
-template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
+template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_width, typename T>
 
-void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::setBias(T (&new_bias)[channel_out])
+void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_width, T>::setBias(T (&new_bias)[channel_out])
 {
     // New bias are being set
     for (int i = 0; i < channel_out; i++)
@@ -74,9 +121,9 @@ void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width,
         this->bias[i] = new_bias[i];
     }
 };
-template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
+template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_width, typename T>
 
-void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::setWeights(T (&new_weights)[channel_out * channel_in * kernel])
+void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_width, T>::setWeights(T (&new_weights)[channel_out * channel_in * kernel])
 {
     // New weights are being set
     for (int i = 0; i < channel_out; i++)
@@ -90,11 +137,11 @@ void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width,
         }
     }
 };
-template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
+template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_width, typename T>
 
-void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::setWeights(std::string filename, bool displayWeights)
+void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_width, T>::setWeights(std::string pathname, bool displayWeights)
 {
-    std::ifstream infile(filename, std::ios::binary);
+    std::ifstream infile(pathname, std::ios::binary);
     if (!infile)
     {
         std::cout << "Error opening file!" << std::endl;
@@ -147,11 +194,11 @@ void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width,
         }
     }
 };
-template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
+template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_width, typename T>
 
-void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::setBias(std::string filename, bool displayBias)
+void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_width, T>::setBias(std::string pathname, bool displayBias)
 {
-    std::ifstream infile(filename, std::ios::binary);
+    std::ifstream infile(pathname, std::ios::binary);
     if (!infile)
     {
         std::cout << "Error opening file!" << std::endl;
@@ -183,9 +230,23 @@ void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width,
     }
 };
 
-template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
-
-void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::forward(T (&input)[channel_in][input_width], T (&output)[channel_out][out_dim])
+/**
+ * @brief Performs forward feed
+ *
+ * @tparam kernel
+ * @tparam stride
+ * @tparam channel_in
+ * @tparam channel_out
+ * @tparam pad
+ * @tparam dilation
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam T
+ * @param input
+ * @param output
+ */
+template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_width, typename T>
+void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_width, T>::forward(T (&input)[channel_in][input_width], T (&output)[channel_out][out_width])
 {
     // Here we assume that the dim of input/output is correct -> else it will lead to errors
 
@@ -195,7 +256,7 @@ void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width,
     // Computation of the values
     for (int j = 0; j < channel_out; j++)
     {
-        for (int i = 0; i < out_dim; i++)
+        for (int i = 0; i < out_width; i++)
         {
             // std::cout << "Output coordinate: (" << j << ", " << i << ")" << std::endl;
 
@@ -218,15 +279,28 @@ void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width,
     }
 };
 
-template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
+template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_width, typename T>
 
-Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::~Conv1d()
+Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_width, T>::~Conv1d()
 {
 }
 
-template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
-
-void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::padInput(T (&input)[channel_in][input_width])
+/**
+ * @brief Pads the input in accordance to the padding mode and pad specified.
+ *
+ * @tparam kernel
+ * @tparam stride
+ * @tparam channel_in
+ * @tparam channel_out
+ * @tparam pad
+ * @tparam dilation
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam T
+ * @param input
+ */
+template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_width, typename T>
+void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_width, T>::padInput(T (&input)[channel_in][input_width])
 {
     for (int i = 0; i < channel_in; i++)
     {
@@ -279,9 +353,9 @@ void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width,
     }
 };
 
-template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
+template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_width, typename T>
 
-void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::setWeights(std::ifstream &infile, bool displayWeights)
+void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_width, T>::setWeights(std::ifstream &infile, bool displayWeights)
 {
     if (!infile)
     {
@@ -338,9 +412,9 @@ void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width,
         }
     }
 };
-template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
+template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_width, typename T>
 
-void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::setBias(std::ifstream &infile, bool displayBias)
+void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_width, T>::setBias(std::ifstream &infile, bool displayBias)
 {
     if (!infile)
     {
@@ -372,9 +446,9 @@ void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width,
     }
 };
 
-template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
+template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_width, typename T>
 
-void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::printempty_input()
+void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_width, T>::printempty_input()
 {
     for (int i = 0; i < channel_in; i++)
     {
@@ -386,9 +460,23 @@ void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width,
     }
     std::cout << std::endl;
 }
-template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
 
-void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::loadweights(std::string pathname)
+/**
+ * @brief Load the weights via pathname
+ *
+ * @tparam kernel
+ * @tparam stride
+ * @tparam channel_in
+ * @tparam channel_out
+ * @tparam pad
+ * @tparam dilation
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam T
+ * @param pathname
+ */
+template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_width, typename T>
+void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_width, T>::loadweights(std::string pathname)
 {
     std::ifstream infile(pathname, std::ios::binary);
     if (!infile)
@@ -402,9 +490,23 @@ void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width,
 
     infile.close();
 };
-template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
 
-void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::loadweights(std::ifstream &infile)
+/**
+ * @brief Load the weights via infile
+ *
+ * @tparam kernel
+ * @tparam stride
+ * @tparam channel_in
+ * @tparam channel_out
+ * @tparam pad
+ * @tparam dilation
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam T
+ * @param infile
+ */
+template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_width, typename T>
+void Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_width, T>::loadweights(std::ifstream &infile)
 {
     if (!infile)
     {

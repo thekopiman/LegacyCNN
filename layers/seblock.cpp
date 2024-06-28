@@ -1,17 +1,51 @@
+/**
+ * @file seblock.cpp
+ * @author Kok Chin Yi (kchinyi@dso.org.sg)
+ * @brief
+ * @version 0.1
+ * @date 2024-06-28
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
 #include "seblock.h"
 
-template <int channel_in, int channel_se, int channel_out, int input_width, int out_dim, typename T>
-SEBlock<channel_in, channel_se, channel_out, input_width, out_dim, T>::SEBlock() : layer0(3), layer1(3)
+/**
+ * @brief Construct a new seblock<channel in, channel se, channel out, input width, out width, t>::seblock object
+ *
+ * The Conv1d layers (layer0 and layer1) have reflect padding by default.
+ *
+ * @tparam channel_in
+ * @tparam channel_se
+ * @tparam channel_out
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam T
+ */
+template <int channel_in, int channel_se, int channel_out, int input_width, int out_width, typename T>
+SEBlock<channel_in, channel_se, channel_out, input_width, out_width, T>::SEBlock() : layer0(3), layer1(3)
 {
     // Sanity check
-    assert(input_width == out_dim);
+    assert(input_width == out_width);
     assert(channel_in == channel_out);
 
     // std::cout << "SEBlock is initialised" << std::endl;
 }
 
-template <int channel_in, int channel_se, int channel_out, int input_width, int out_dim, typename T>
-void SEBlock<channel_in, channel_se, channel_out, input_width, out_dim, T>::forward(T (&input)[channel_in][input_width], T (&output)[channel_out][out_dim])
+/**
+ * @brief Perform forward feed
+ *
+ * @tparam channel_in
+ * @tparam channel_se
+ * @tparam channel_out
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam T
+ * @param input
+ * @param output
+ */
+template <int channel_in, int channel_se, int channel_out, int input_width, int out_width, typename T>
+void SEBlock<channel_in, channel_se, channel_out, input_width, out_width, T>::forward(T (&input)[channel_in][input_width], T (&output)[channel_out][out_width])
 {
     MatrixFunctions::Mean(input, mean);
     layer0.forward(mean, temp);
@@ -24,11 +58,22 @@ void SEBlock<channel_in, channel_se, channel_out, input_width, out_dim, T>::forw
     MatrixFunctions::HadamardProduct(input, temp2, output);
 }
 
-template <int channel_in, int channel_se, int channel_out, int input_width, int out_dim, typename T>
-SEBlock<channel_in, channel_se, channel_out, input_width, out_dim, T>::~SEBlock() {}
+template <int channel_in, int channel_se, int channel_out, int input_width, int out_width, typename T>
+SEBlock<channel_in, channel_se, channel_out, input_width, out_width, T>::~SEBlock() {}
 
-template <int channel_in, int channel_se, int channel_out, int input_width, int out_dim, typename T>
-void SEBlock<channel_in, channel_se, channel_out, input_width, out_dim, T>::loadweights(std::string pathname)
+/**
+ * @brief Load weights via pathname
+ *
+ * @tparam channel_in
+ * @tparam channel_se
+ * @tparam channel_out
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam T
+ * @param pathname
+ */
+template <int channel_in, int channel_se, int channel_out, int input_width, int out_width, typename T>
+void SEBlock<channel_in, channel_se, channel_out, input_width, out_width, T>::loadweights(std::string pathname)
 {
     std::ifstream infile(pathname, std::ios::binary);
     if (!infile)
@@ -41,8 +86,19 @@ void SEBlock<channel_in, channel_se, channel_out, input_width, out_dim, T>::load
     infile.close();
 }
 
-template <int channel_in, int channel_se, int channel_out, int input_width, int out_dim, typename T>
-void SEBlock<channel_in, channel_se, channel_out, input_width, out_dim, T>::loadweights(std::ifstream &infile)
+/**
+ * @brief Load weights via infile
+ *
+ * @tparam channel_in
+ * @tparam channel_se
+ * @tparam channel_out
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam T
+ * @param infile
+ */
+template <int channel_in, int channel_se, int channel_out, int input_width, int out_width, typename T>
+void SEBlock<channel_in, channel_se, channel_out, input_width, out_width, T>::loadweights(std::ifstream &infile)
 {
     layer0.loadweights(infile);
     layer1.loadweights(infile);

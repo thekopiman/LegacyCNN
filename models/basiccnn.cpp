@@ -1,3 +1,13 @@
+/**
+ * @file basiccnn.cpp
+ * @author Kok Chin Yi (kchinyi@dso.org.sg)
+ * @brief
+ * @version 0.1
+ * @date 2024-06-28
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
 #include "basiccnn.h"
 
 void BasicCNNModel::forward(float (&input)[2][16], float (&y)[6])

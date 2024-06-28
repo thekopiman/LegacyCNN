@@ -1,3 +1,13 @@
+/**
+ * @file seblock.h
+ * @author Kok Chin Yi (kchinyi@dso.org.sg)
+ * @brief
+ * @version 0.1
+ * @date 2024-06-28
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
 #ifndef seblock_h
 #define seblock_h
 
@@ -10,17 +20,74 @@
 #include <assert.h>
 #include <fstream>
 
-// With ref to the python code, we always assume lengths = None
-// channel_in, channel_se, channel_out, input_width, out_dim, T
-// <8, 128, 8, 64, 64, float>
-template <int channel_in, int channel_se, int channel_out, int input_width, int out_dim, typename T>
+/**
+ * @brief SEBlock
+ *
+ * We assume lengths = None
+ *
+ * @tparam channel_in
+ * @tparam channel_se
+ * @tparam channel_out
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam T
+ */
+template <int channel_in, int channel_se, int channel_out, int input_width, int out_width, typename T>
 class SEBlock
 {
 public:
+    /**
+     * @brief Construct a new seblock<channel in, channel se, channel out, input width, out width, t>::seblock object
+     *
+     * The Conv1d layers (layer0 and layer1) have reflect padding by default.
+     *
+     * @tparam channel_in
+     * @tparam channel_se
+     * @tparam channel_out
+     * @tparam input_width
+     * @tparam out_width
+     * @tparam T
+     */
     SEBlock();
-    void forward(T (&input)[channel_in][input_width], T (&output)[channel_out][out_dim]);
+    /**
+     * @brief Perform forward feed
+     *
+     * @tparam channel_in
+     * @tparam channel_se
+     * @tparam channel_out
+     * @tparam input_width
+     * @tparam out_width
+     * @tparam T
+     * @param input
+     * @param output
+     */
+    void forward(T (&input)[channel_in][input_width], T (&output)[channel_out][out_width]);
     ~SEBlock();
+
+    /**
+     * @brief Load weights via pathname
+     *
+     * @tparam channel_in
+     * @tparam channel_se
+     * @tparam channel_out
+     * @tparam input_width
+     * @tparam out_width
+     * @tparam T
+     * @param pathname
+     */
     void loadweights(std::string pathname);
+
+    /**
+     * @brief Load weights via infile
+     *
+     * @tparam channel_in
+     * @tparam channel_se
+     * @tparam channel_out
+     * @tparam input_width
+     * @tparam out_width
+     * @tparam T
+     * @param infile
+     */
     void loadweights(std::ifstream &infile);
 
 private:

@@ -1,3 +1,13 @@
+/**
+ * @file ecapa.h
+ * @author Kok Chin Yi (kchinyi@dso.org.sg)
+ * @brief
+ * @version 0.1
+ * @date 2024-06-28
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
 #ifndef ecapatdnnmodel_h
 #define ecapatdnnmodel_h
 

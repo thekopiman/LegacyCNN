@@ -1,3 +1,13 @@
+/**
+ * @file basiccnn.h
+ * @author Kok Chin Yi (kchinyi@dso.org.sg)
+ * @brief
+ * @version 0.1
+ * @date 2024-06-28
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
 #ifndef basiccnnmodel_h
 #define basiccnnmodel_h
 

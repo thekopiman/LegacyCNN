@@ -1,5 +1,22 @@
+/**
+ * @file dense.cpp
+ * @author Kok Chin Yi (kchinyi@dso.org.sg)
+ * @brief
+ * @version 0.1
+ * @date 2024-06-28
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
 #include "dense.h"
 
+/**
+ * @brief Construct a new Dense<input_dim, output_dim, T>::Dense object
+ *
+ * @tparam input_dim
+ * @tparam output_dim
+ * @tparam T
+ */
 template <int input_dim, int output_dim, typename T>
 Dense<input_dim, output_dim, T>::Dense()
 {
@@ -46,9 +63,9 @@ void Dense<input_dim, output_dim, T>::setBias(T (&new_bias)[output_dim])
 };
 
 template <int input_dim, int output_dim, typename T>
-void Dense<input_dim, output_dim, T>::setBias(std::string filename)
+void Dense<input_dim, output_dim, T>::setBias(std::string pathname)
 {
-    std::ifstream infile(filename, std::ios::binary);
+    std::ifstream infile(pathname, std::ios::binary);
     if (!infile)
     {
         std::cout << "Error opening file!" << std::endl;
@@ -70,9 +87,9 @@ void Dense<input_dim, output_dim, T>::setBias(std::string filename)
 };
 
 template <int input_dim, int output_dim, typename T>
-void Dense<input_dim, output_dim, T>::setWeights(std::string filename, bool displayWeights)
+void Dense<input_dim, output_dim, T>::setWeights(std::string pathname, bool displayWeights)
 {
-    std::ifstream infile(filename, std::ios::binary);
+    std::ifstream infile(pathname, std::ios::binary);
     if (!infile)
     {
         std::cout << "Error opening file!" << std::endl;
@@ -155,6 +172,15 @@ void Dense<input_dim, output_dim, T>::setWeights(std::ifstream &infile, bool dis
     }
 };
 
+/**
+ * @brief Performs forward feed
+ *
+ * @tparam input_dim
+ * @tparam output_dim
+ * @tparam T
+ * @param input
+ * @param output
+ */
 template <int input_dim, int output_dim, typename T>
 void Dense<input_dim, output_dim, T>::forward(T (&input)[input_dim], T (&output)[output_dim])
 {
@@ -188,6 +214,14 @@ void Dense<input_dim, output_dim, T>::setBias(std::ifstream &infile)
     infile.read(reinterpret_cast<char *>(this->bias), total_size * sizeof(T));
 };
 
+/**
+ * @brief Load weights via infile
+ *
+ * @tparam input_dim
+ * @tparam output_dim
+ * @tparam T
+ * @param infile
+ */
 template <int input_dim, int output_dim, typename T>
 void Dense<input_dim, output_dim, T>::loadweights(std::ifstream &infile)
 {
@@ -195,10 +229,18 @@ void Dense<input_dim, output_dim, T>::loadweights(std::ifstream &infile)
     setBias(infile);
 };
 
+/**
+ * @brief Load weights via pathname
+ *
+ * @tparam input_dim
+ * @tparam output_dim
+ * @tparam T
+ * @param pathname
+ */
 template <int input_dim, int output_dim, typename T>
-void Dense<input_dim, output_dim, T>::loadweights(std::string filename)
+void Dense<input_dim, output_dim, T>::loadweights(std::string pathname)
 {
-    std::ifstream infile(filename, std::ios::binary);
+    std::ifstream infile(pathname, std::ios::binary);
     if (!infile)
     {
         std::cout << "Error opening file!" << std::endl;

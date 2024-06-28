@@ -1,3 +1,13 @@
+/**
+ * @file ecapa.cpp
+ * @author Kok Chin Yi (kchinyi@dso.org.sg)
+ * @brief
+ * @version 0.1
+ * @date 2024-06-28
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
 #include "ecapa.h"
 
 void ECAPA_TDNN::forward(float (&input)[2][64], float (&y)[6])

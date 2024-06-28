@@ -1,5 +1,23 @@
+/**
+ * @file batchnorm1d.cpp
+ * @author Kok Chin Yi (kchinyi@dso.org.sg)
+ * @brief
+ * @version 0.1
+ * @date 2024-06-28
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
 #include "batchnorm1d.h"
-
+/**
+ * @brief Construct a new Batch Norm 1d<channel, width,  T>:: Batch Norm 1d object
+ *
+ * It will default to train mode
+ *
+ * @tparam channel
+ * @tparam width
+ * @tparam T
+ */
 template <int channel, int width, typename T>
 BatchNorm1d<channel, width, T>::BatchNorm1d()
 {
@@ -84,9 +102,9 @@ void BatchNorm1d<channel, width, T>::setVar(T (&new_var)[channel])
 };
 
 template <int channel, int width, typename T>
-void BatchNorm1d<channel, width, T>::setGamma(std::string filename)
+void BatchNorm1d<channel, width, T>::setGamma(std::string pathname)
 {
-    std::ifstream infile(filename, std::ios::binary);
+    std::ifstream infile(pathname, std::ios::binary);
     if (!infile)
     {
         std::cout << "Error opening file!" << std::endl;
@@ -108,9 +126,9 @@ void BatchNorm1d<channel, width, T>::setGamma(std::string filename)
 };
 
 template <int channel, int width, typename T>
-void BatchNorm1d<channel, width, T>::setBeta(std::string filename)
+void BatchNorm1d<channel, width, T>::setBeta(std::string pathname)
 {
-    std::ifstream infile(filename, std::ios::binary);
+    std::ifstream infile(pathname, std::ios::binary);
     if (!infile)
     {
         std::cout << "Error opening file!" << std::endl;
@@ -132,9 +150,9 @@ void BatchNorm1d<channel, width, T>::setBeta(std::string filename)
 };
 
 template <int channel, int width, typename T>
-void BatchNorm1d<channel, width, T>::setMean(std::string filename)
+void BatchNorm1d<channel, width, T>::setMean(std::string pathname)
 {
-    std::ifstream infile(filename, std::ios::binary);
+    std::ifstream infile(pathname, std::ios::binary);
     if (!infile)
     {
         std::cout << "Error opening file!" << std::endl;
@@ -156,9 +174,9 @@ void BatchNorm1d<channel, width, T>::setMean(std::string filename)
 };
 
 template <int channel, int width, typename T>
-void BatchNorm1d<channel, width, T>::setVar(std::string filename)
+void BatchNorm1d<channel, width, T>::setVar(std::string pathname)
 {
-    std::ifstream infile(filename, std::ios::binary);
+    std::ifstream infile(pathname, std::ios::binary);
     if (!infile)
     {
         std::cout << "Error opening file!" << std::endl;
@@ -267,6 +285,14 @@ void BatchNorm1d<channel, width, T>::setVar(std::ifstream &infile)
     infile.read(reinterpret_cast<char *>(this->running_variance), total_size * sizeof(T));
 };
 
+/**
+ * @brief Load the weights via infile
+ *
+ * @tparam channel
+ * @tparam width
+ * @tparam T
+ * @param infile
+ */
 template <int channel, int width, typename T>
 void BatchNorm1d<channel, width, T>::loadweights(std::ifstream &infile)
 {
@@ -276,10 +302,18 @@ void BatchNorm1d<channel, width, T>::loadweights(std::ifstream &infile)
     setVar(infile);
 };
 
+/**
+ * @brief Load the weights via pathname
+ *
+ * @tparam channel
+ * @tparam width
+ * @tparam T
+ * @param pathname
+ */
 template <int channel, int width, typename T>
-void BatchNorm1d<channel, width, T>::loadweights(std::string filename)
+void BatchNorm1d<channel, width, T>::loadweights(std::string pathname)
 {
-    std::ifstream infile(filename, std::ios::binary);
+    std::ifstream infile(pathname, std::ios::binary);
     if (!infile)
     {
         std::cout << "Error opening file!" << std::endl;
@@ -297,6 +331,15 @@ void BatchNorm1d<channel, width, T>::setEps(T var)
     this->eps = var;
 };
 
+/**
+ * @brief Forward feed during train mode
+ *
+ * @tparam channel
+ * @tparam width
+ * @tparam T
+ * @param input
+ * @param output
+ */
 template <int channel, int width, typename T>
 void BatchNorm1d<channel, width, T>::forward_train(T (&input)[channel][width], T (&output)[channel][width])
 {
@@ -330,6 +373,15 @@ void BatchNorm1d<channel, width, T>::forward_train(T (&input)[channel][width], T
     }
 };
 
+/**
+ * @brief Forward feed during eval mode
+ *
+ * @tparam channel
+ * @tparam width
+ * @tparam T
+ * @param input
+ * @param output
+ */
 template <int channel, int width, typename T>
 void BatchNorm1d<channel, width, T>::forward_eval(T (&input)[channel][width], T (&output)[channel][width])
 {
@@ -343,6 +395,13 @@ void BatchNorm1d<channel, width, T>::forward_eval(T (&input)[channel][width], T 
     }
 };
 
+/**
+ * @brief Performs forward feed in accordance to the mode being set during construction.
+ *
+ * @tparam channel
+ * @tparam width
+ * @tparam T
+ */
 template <int channel, int width, typename T>
 void BatchNorm1d<channel, width, T>::forward(T (&input)[channel][width], T (&output)[channel][width])
 {

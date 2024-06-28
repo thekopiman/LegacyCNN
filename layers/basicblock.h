@@ -30,11 +30,11 @@
  * @tparam pad
  * @tparam dilation
  * @tparam input_width
- * @tparam out_dim
+ * @tparam out_width
  * @tparam T
  */
 
-template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_dim, typename T>
+template <int kernel, int stride, int channel_in, int channel_out, int pad, int dilation, int input_width, int out_width, typename T>
 class BasicBlock
 {
 public:
@@ -50,7 +50,7 @@ public:
      * @tparam pad
      * @tparam dilation
      * @tparam input_width
-     * @tparam out_dim
+     * @tparam out_width
      * @tparam T
      * @param infile
      */
@@ -66,7 +66,7 @@ public:
      * @tparam pad
      * @tparam dilation
      * @tparam input_width
-     * @tparam out_dim
+     * @tparam out_width
      * @tparam T
      * @param infile
      */
@@ -75,7 +75,7 @@ public:
     /**
      * @brief The `forward` function takes a 2D input array `input` of type `T` with dimensions
      * `[channel_in][input_width]` and a 2D output array `output` of type `T` with dimensions
-     * `[channel_out][out_dim]`.
+     * `[channel_out][out_width]`.
      *
      * @tparam kernel
      * @tparam stride
@@ -84,15 +84,15 @@ public:
      * @tparam pad
      * @tparam dilation
      * @tparam input_width
-     * @tparam out_dim
+     * @tparam out_width
      * @tparam T
      * @param input
      * @param output
      */
-    void forward(T (&input)[channel_in][input_width], T (&output)[channel_out][out_dim]);
+    void forward(T (&input)[channel_in][input_width], T (&output)[channel_out][out_width]);
 
     /**
-     * @brief Destroy the BasicBlock<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T>::BasicBlock object
+     * @brief Destroy the BasicBlock<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_width, T>::BasicBlock object
      *
      * @tparam kernel
      * @tparam stride
@@ -101,14 +101,14 @@ public:
      * @tparam pad
      * @tparam dilation
      * @tparam input_width
-     * @tparam out_dim
+     * @tparam out_width
      * @tparam T
      */
     ~BasicBlock();
 
 private:
-    Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_dim, T> layer0;
-    BatchNorm1d<channel_out, out_dim, T> layer1;
+    Conv1d<kernel, stride, channel_in, channel_out, pad, dilation, input_width, out_width, T> layer0;
+    BatchNorm1d<channel_out, out_width, T> layer1;
 };
 
 #include "basicblock.cpp"

@@ -1,13 +1,52 @@
+/**
+ * @file asp.cpp
+ * @author Kok Chin Yi (kchinyi@dso.org.sg)
+ * @brief
+ * @version 0.1
+ * @date 2024-06-28
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
 #include "asp.h"
 
-template <int channels, int attention_channels, int input_width, int out_dim, typename T>
-ASP<channels, attention_channels, input_width, out_dim, T>::ASP(){};
+/**
+ * @brief Construct a new asp<channels, attention channels, input width, out dim, t>::asp object
+ *
+ * @tparam channels
+ * @tparam attention_channels
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam T
+ */
+template <int channels, int attention_channels, int input_width, int out_width, typename T>
+ASP<channels, attention_channels, input_width, out_width, T>::ASP(){};
 
-template <int channels, int attention_channels, int input_width, int out_dim, typename T>
-ASP<channels, attention_channels, input_width, out_dim, T>::~ASP(){};
+/**
+ * @brief Destroy the asp<channels, attention channels, input width, out dim, t>::asp object
+ *
+ * @tparam channels
+ * @tparam attention_channels
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam T
+ */
+template <int channels, int attention_channels, int input_width, int out_width, typename T>
+ASP<channels, attention_channels, input_width, out_width, T>::~ASP(){};
 
-template <int channels, int attention_channels, int input_width, int out_dim, typename T>
-void ASP<channels, attention_channels, input_width, out_dim, T>::forward(T (&input)[channels][input_width], T (&output)[channels * 2][1])
+/**
+ * @brief Conputes the forward feed
+ *
+ * @tparam channels
+ * @tparam attention_channels
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam T
+ * @param input
+ * @param output
+ */
+template <int channels, int attention_channels, int input_width, int out_width, typename T>
+void ASP<channels, attention_channels, input_width, out_width, T>::forward(T (&input)[channels][input_width], T (&output)[channels * 2][1])
 {
     MatrixFunctions::Mean(input, this->mean);
     MatrixFunctions::Std(input, this->std);
@@ -48,8 +87,19 @@ void ASP<channels, attention_channels, input_width, out_dim, T>::forward(T (&inp
     }
 };
 
-template <int channels, int attention_channels, int input_width, int out_dim, typename T>
-void ASP<channels, attention_channels, input_width, out_dim, T>::compute_statistics(T (&x)[channels][input_width], T (&m)[channels][input_width])
+/**
+ * @brief Compute Statistics
+ *
+ * @tparam channels
+ * @tparam attention_channels
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam T
+ * @param input
+ * @param output
+ */
+template <int channels, int attention_channels, int input_width, int out_width, typename T>
+void ASP<channels, attention_channels, input_width, out_width, T>::compute_statistics(T (&x)[channels][input_width], T (&m)[channels][input_width])
 {
     T temp[channels][input_width];
 
@@ -79,8 +129,18 @@ void ASP<channels, attention_channels, input_width, out_dim, T>::compute_statist
     }
 }
 
-template <int channels, int attention_channels, int input_width, int out_dim, typename T>
-void ASP<channels, attention_channels, input_width, out_dim, T>::loadweights(std::string pathname)
+/**
+ * @brief Loadweights via pathname
+ *
+ * @tparam channels
+ * @tparam attention_channels
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam T
+ * @param pathname
+ */
+template <int channels, int attention_channels, int input_width, int out_width, typename T>
+void ASP<channels, attention_channels, input_width, out_width, T>::loadweights(std::string pathname)
 {
     std::ifstream infile(pathname, std::ios::binary);
     if (!infile)
@@ -95,8 +155,18 @@ void ASP<channels, attention_channels, input_width, out_dim, T>::loadweights(std
     infile.close();
 };
 
-template <int channels, int attention_channels, int input_width, int out_dim, typename T>
-void ASP<channels, attention_channels, input_width, out_dim, T>::loadweights(std::ifstream &infile)
+/**
+ * @brief Loadweights via infile
+ *
+ * @tparam channels
+ * @tparam attention_channels
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam T
+ * @param infile
+ */
+template <int channels, int attention_channels, int input_width, int out_width, typename T>
+void ASP<channels, attention_channels, input_width, out_width, T>::loadweights(std::ifstream &infile)
 {
     tdnn.loadweights(infile);
     conv.loadweights(infile);

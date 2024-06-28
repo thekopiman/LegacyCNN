@@ -1,11 +1,31 @@
+/**
+ * @file helper.cpp
+ * @author Kok Chin Yi (kchinyi@dso.org.sg)
+ * @brief Extra functions
+ * @version 0.1
+ * @date 2024-06-28
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
+
 #include "helper.h"
 
+/**
+ * @brief Read the .bin file and returns it to input
+ *
+ * @tparam rows
+ * @tparam cols
+ * @tparam T
+ * @param pathname
+ * @param inputs
+ */
 template <size_t rows, size_t cols, typename T>
-void Helper::readInputs(std::string filename, T (&inputs)[rows][cols])
+void Helper::readInputs(std::string pathname, T (&inputs)[rows][cols])
 {
     float flat_matrix[rows * cols];
 
-    std::ifstream infile(filename, std::ios::binary);
+    std::ifstream infile(pathname, std::ios::binary);
     if (!infile)
     {
         std::cout << "Error opening file!" << std::endl;
@@ -36,6 +56,13 @@ void Helper::readInputs(std::string filename, T (&inputs)[rows][cols])
     }
 }
 
+/**
+ * @brief Prints all the elements in a 1d array
+ *
+ * @tparam dim1
+ * @tparam T
+ * @param input
+ */
 template <size_t dim1, typename T>
 void Helper::print(T (&input)[dim1])
 {
@@ -46,6 +73,13 @@ void Helper::print(T (&input)[dim1])
     std::cout << std::endl;
 };
 
+/**
+ * @brief Prints all the elements in a 2d array
+ *
+ * @tparam dim1
+ * @tparam T
+ * @param input
+ */
 template <size_t dim1, size_t dim2, typename T>
 void Helper::print(T (&input)[dim1][dim2])
 {

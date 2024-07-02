@@ -12,7 +12,7 @@ Attributes are omitted to prevent clutter
 
 ## Docs
 
-Click on `html/index.html` to view the docs.
+TBC
 
 # Important: Conv1d discrepancy
 

@@ -12,7 +12,7 @@ Attributes are omitted to prevent clutter
 
 ## Docs
 
-TBC
+Find the [docs](https://thekopiman.github.io/LegacyCNN-docs/) here!
 
 # Important: Conv1d discrepancy
 

@@ -40,11 +40,13 @@ void ECAPA_TDNN::forward(float (&input)[2][64], float (&y)[6])
     MatrixFunctions::Flatten(y1, flatten_x);
 
     fc.forward(flatten_x, y);
+
+    ActivationFunctions::Softmax(y);
 };
 
 ECAPA_TDNN::ECAPA_TDNN() : asp_BN(1)
 {
-    std::cout << "ECAPA TDNN initialised" << std::endl;
+    std::cout << "ECAPA TDNN initialised in Eval Mode" << std::endl;
 };
 
 ECAPA_TDNN::~ECAPA_TDNN() {
@@ -61,31 +63,33 @@ void ECAPA_TDNN::loadweights(std::string pathname)
 
     // Initial Layer
     initiallayer.loadweights(infile);
-    std::cout << "Initial Layer Loaded" << std::endl;
+    // std::cout << "Initial Layer Loaded" << std::endl;
 
     // Seres
     seres_1.loadweights(infile);
-    std::cout << "SERES 1 Loaded" << std::endl;
+    // std::cout << "SERES 1 Loaded" << std::endl;
     seres_2.loadweights(infile);
-    std::cout << "SERES 2 Loaded" << std::endl;
+    // std::cout << "SERES 2 Loaded" << std::endl;
     seres_3.loadweights(infile);
-    std::cout << "SERES 3 Loaded" << std::endl;
+    // std::cout << "SERES 3 Loaded" << std::endl;
 
     // mfa
     mfa.loadweights(infile);
-    std::cout << "mfa Loaded" << std::endl;
+    // std::cout << "mfa Loaded" << std::endl;
 
     // asp
     asp.loadweights(infile);
-    std::cout << "asp Loaded" << std::endl;
+    // std::cout << "asp Loaded" << std::endl;
 
     // ASP BN
     asp_BN.loadweights(infile);
-    std::cout << "asp bn Loaded" << std::endl;
+    // std::cout << "asp bn Loaded" << std::endl;
 
     // fc
     fc.loadweights(infile);
-    std::cout << "fc Loaded" << std::endl;
+    // std::cout << "fc Loaded" << std::endl;
 
     infile.close();
+
+    std::cout << "ECAPA TDNN weights loaded successfully." << std::endl;
 };

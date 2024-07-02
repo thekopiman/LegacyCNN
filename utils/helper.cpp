@@ -74,6 +74,29 @@ void Helper::print(T (&input)[dim1])
 };
 
 /**
+ * @brief Returns the Argmax
+ *
+ * @tparam dim1
+ * @tparam T
+ * @param input
+ */
+template <size_t dim1, typename T>
+int Helper::ArgMax(T (&input)[dim1])
+{
+    int index = -1;
+    T max_var = -1;
+    for (int i = 0; i < dim1; i++)
+    {
+        if (input[i] > max_var)
+        {
+            max_var = input[i];
+            index = i;
+        }
+    }
+    return index;
+};
+
+/**
  * @brief Prints all the elements in a 2d array
  *
  * @tparam dim1

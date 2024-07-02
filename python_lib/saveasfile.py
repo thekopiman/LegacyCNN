@@ -56,6 +56,8 @@ class BlockSave:
         if not os.path.exists(dirpath):
             os.makedirs(dirpath)
 
+        self.save()
+
     def save(self):
         """
         We will save in this format

@@ -224,11 +224,8 @@ class SEBlock(nn.Module):
         else:
             s = x.mean(dim=2, keepdim=True)
 
-        print(s)
         s = self.relu(self.conv1(s))
-        print(s)
         s = self.sigmoid(self.conv2(s))
-        print(s)
 
         return s * x
 
@@ -315,7 +312,6 @@ class AttentiveStatisticsPooling(nn.Module):
         else:
             attn = x
 
-        # print(attn)
         # Apply layers
         attn = self.conv(self.tanh(self.tdnn(attn)))
 
@@ -538,7 +534,7 @@ class ECAPA_TDNN(torch.nn.Module):
             attention_channels=attention_channels,
             global_context=global_context,
         )
-        # self.asp_bn = BatchNorm1d(input_size=channels[-1] * 2)
+        self.asp_bn = BatchNorm1d(input_size=channels[-1] * 2)
 
         # # Final linear transformation
         # self.fc = Conv1d(
@@ -573,27 +569,19 @@ class ECAPA_TDNN(torch.nn.Module):
 
         xl = []
         for layer in self.blocks:
-            # print("Input: ", x.shape)
             try:
                 x = layer(x, lengths=lengths)
             except TypeError:
                 x = layer(x)
-            # print("Output: ", x.shape)
             xl.append(x)
 
         # Multi-layer feature aggregation
         x = torch.cat(xl[1:], dim=1)  # Ignore the initial TDNN block
-        print("MLA Input: ", x)
         x = self.mfa(x)
-        print("MLA Output: ", x)
 
         # Attentive Statistical Pooling
-        print("ASP Input: ", x)
         x = self.asp(x, lengths=lengths)
-        print("ASP Output: ", x)
-        # print("ASP BN Input: ", x.shape)
-        # x = self.asp_bn(x)
-        # print("ASP BN Output: ", x.shape)
+        x = self.asp_bn(x)
 
         # Final linear transformation
         # x = self.fc(x)
@@ -610,7 +598,7 @@ class ECAPA_TDNN(torch.nn.Module):
 
         lst += self.mfa.return_layers()
         lst += self.asp.return_layers()
-        # lst += self.asp_bn.return_layers()
+        lst += self.asp_bn.return_layers()
         lst += [self.final[1]]
         return lst
 

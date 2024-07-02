@@ -47,6 +47,16 @@ public:
     static void print(T (&input)[dim1]);
 
     /**
+     * @brief Returns the Argmax
+     *
+     * @tparam dim1
+     * @tparam T
+     * @param input
+     */
+    template <size_t dim1, typename T>
+    static int ArgMax(T (&input)[dim1]);
+
+    /**
      * @brief Prints all the elements in a 2d array
      *
      * @tparam dim1

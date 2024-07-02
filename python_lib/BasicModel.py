@@ -59,48 +59,38 @@ class BasicModel(torch.nn.Module):
         )
 
     def forward(self, x):
-        # x = self.input_layer(x)
         y = self.layer0(x)
-        print("layer0", y)
         y = self.layer1(y)
-        print("layer1", y)
         y = self.layer2(y)
-        print("layer2", y)
         y = self.layer3(y)
-        print("layer3", y)
         y = self.layer4(y)
-        print("layer4", y)
         ## Final Layer
         y = self.final(y)
-        print("fc", y)
 
         z = F.softmax(y)
         return z
 
-    def save(self, dirpath=""):
-        layer0_conv = SaveAsBin(self.layer0[0], "layer0_conv", dirpath)
-        layer0_bn = SaveAsBin(self.layer0[2], "layer0_bn", dirpath)
-        layer1_conv = SaveAsBin(self.layer1[0], "layer1_conv", dirpath)
-        layer1_bn = SaveAsBin(self.layer1[2], "layer1_bn", dirpath)
-        layer2_conv = SaveAsBin(self.layer2[0], "layer2_conv", dirpath)
-        layer2_bn = SaveAsBin(self.layer2[2], "layer2_bn", dirpath)
-        layer3_conv = SaveAsBin(self.layer3[0], "layer3_conv", dirpath)
-        layer3_bn = SaveAsBin(self.layer3[2], "layer3_bn", dirpath)
-        layer4_conv = SaveAsBin(self.layer4[0], "layer4_conv", dirpath)
-        layer4_bn = SaveAsBin(self.layer4[2], "layer4_bn", dirpath)
-        final_fc = SaveAsBin(self.final[1], "final_fc", dirpath)
+    def return_layers(self):
 
-        layer0_conv.saveBoth()
-        layer1_conv.saveBoth()
-        layer2_conv.saveBoth()
-        layer3_conv.saveBoth()
-        layer4_conv.saveBoth()
+        lst = []
 
-        layer0_bn.saveBoth()
-        layer1_bn.saveBoth()
-        layer2_bn.saveBoth()
-        layer3_bn.saveBoth()
-        layer4_bn.saveBoth()
+        # Do not need to save ReLU as ReLU has no weights
+        lst.append(self.layer0[0])  # Conv layer
+        lst.append(self.layer0[2])  # BN Layer
 
-        final_fc.saveWeights()
-        final_fc.saveBias()
+        lst.append(self.layer1[0])
+        lst.append(self.layer1[2])
+
+        lst.append(self.layer2[0])
+        lst.append(self.layer2[2])
+
+        lst.append(self.layer3[0])
+        lst.append(self.layer3[2])
+
+        lst.append(self.layer4[0])
+        lst.append(self.layer4[2])
+
+        # Do not need to save Flatten as Flatten has no weights
+        lst.append(self.final[1])  # FC weights
+
+        return lst

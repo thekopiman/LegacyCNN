@@ -123,6 +123,6 @@ I have provided 2 examples in the `models` directory. The accompanying python fi
 ### Compile & Run as follows
 
 ```bash
-g++ -O2 *.cpp layers/*.h models/*.h utils/*.h -o test
+g++ -O2 *.cpp layers/*.h models/*.h utils/*.h tests/*.h -o test
 test
 ```

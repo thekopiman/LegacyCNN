@@ -1,7 +1,4 @@
 #include <iostream>
-#include "models/basiccnn.h"
-#include "utils/helper.h"
-#include "models/ecapa.h"
 #include "tests/time.h"
 
 int main()

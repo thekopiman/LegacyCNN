@@ -101,7 +101,7 @@ class Conv1d(BasicLayer):
     def initialisedstring(self):
         super().initialisedstring()
 
-        return f"{self.__class__.__name__}<{self.kernel}, {self.stride}, {self.channel_in}, {self.channel_out}, {self.pad*2}, {self.dilation}, {self.input_width}, {self.output_width}, {self.T}> {self}"
+        return f"{self.__class__.__name__}<{self.kernel}, {self.stride}, {self.channel_in}, {self.channel_out}, {self.pad*2}, {self.dilation}, {self.input_width}, {self.output_width}, {self.T}> {self}; \n{self.T} x{self.freq}[{self.channel_out}][{self.output_width}];"
 
 
 class TDNNBlock(Conv1d):
@@ -115,7 +115,7 @@ class TDNNBlock(Conv1d):
     def initialisedstring(self):
         super().initialisedstring()
 
-        return f"{self.__class__.__name__}<{self.kernel}, {self.stride}, {self.channel_in}, {self.channel_out}, {self.dilation}, {self.input_width}, {self.output_width}, {self.pad*2}, {self.T}> {self}"
+        return f"{self.__class__.__name__}<{self.kernel}, {self.stride}, {self.channel_in}, {self.channel_out}, {self.dilation}, {self.input_width}, {self.output_width}, {self.pad*2}, {self.T}> {self}; \n{self.T} x{self.freq}[{self.channel_out}][{self.output_width}];"
 
 
 class BatchNorm1d(BasicLayer):
@@ -125,7 +125,7 @@ class BatchNorm1d(BasicLayer):
     def initialisedstring(self):
         super().initialisedstring()
 
-        return f"{self.__class__.__name__}<{self.channel_in}, {self.input_width}, {self.T}> {self}"
+        return f"{self.__class__.__name__}<{self.channel_in}, {self.input_width}, {self.T}> {self}; \n{self.T} x{self.freq}[{self.channel_out}][{self.output_width}];"
 
 
 class SEBlock(BasicLayer):
@@ -136,7 +136,7 @@ class SEBlock(BasicLayer):
     def initialisedstring(self):
         super().initialisedstring()
 
-        return f"{self.__class__.__name__}<{self.channel_in}, {self.se_channel}, {self.channel_out}, {self.input_width}, {self.output_width}, {self.T}> {self}"
+        return f"{self.__class__.__name__}<{self.channel_in}, {self.se_channel}, {self.channel_out}, {self.input_width}, {self.output_width}, {self.T}> {self}; \n{self.T} x{self.freq}[{self.channel_out}][{self.output_width}];"
 
 
 class Res2NetBlock(TDNNBlock):
@@ -147,7 +147,7 @@ class Res2NetBlock(TDNNBlock):
     def initialisedstring(self):
         super().initialisedstring()
 
-        return f"{self.__class__.__name__}<{self.kernel}, {self.channel_in}, {self.channel_out}, {self.dilation}, {self.input_width}, {self.output_width}, {self.pad*2},{self.scale}, {self.T}> {self}"
+        return f"{self.__class__.__name__}<{self.kernel}, {self.channel_in}, {self.channel_out}, {self.dilation}, {self.input_width}, {self.output_width}, {self.pad*2},{self.scale}, {self.T}> {self}; \n{self.T} x{self.freq}[{self.channel_out}][{self.output_width}];"
 
 
 class SERes2NetBlock(Res2NetBlock):
@@ -167,7 +167,7 @@ class SERes2NetBlock(Res2NetBlock):
     def initialisedstring(self):
         super().initialisedstring()
 
-        return f"{self.__class__.__name__}<{self.kernel}, {self.channel_in}, {self.channel_out}, {self.dilation}, {self.input_width}, {self.output_width}, {self.pad*2}, {self.scale}, {self.se_channel}, {self.T}> {self}"
+        return f"{self.__class__.__name__}<{self.kernel}, {self.channel_in}, {self.channel_out}, {self.dilation}, {self.input_width}, {self.output_width}, {self.pad*2}, {self.scale}, {self.se_channel}, {self.T}> {self}; \n{self.T} x{self.freq}[{self.channel_out}][{self.output_width}];"
 
 
 class ASP(BasicLayer):
@@ -183,7 +183,7 @@ class ASP(BasicLayer):
         return (self.channel_out, self.output_width)
 
     def initialisedstring(self):
-        return f"{self.__class__.__name__}<{self.channel_in}, {self.attention_channels}, {self.input_width}, {self.output_width}, {self.T}> {self}"
+        return f"{self.__class__.__name__}<{self.channel_in}, {self.attention_channels}, {self.input_width}, {self.output_width}, {self.T}> {self}; \n{self.T} x{self.freq}[{self.channel_out}][{self.output_width}];"
 
 
 class Dense:
@@ -208,7 +208,7 @@ class Dense:
         if self.input_width == None or self.output_width == None:
             raise Exception("Run .forward before generating the string")
         else:
-            return f"{self.__class__.__name__}<{self.input_width}, {self.output_width}, {self.T}> {self}"
+            return f"{self.__class__.__name__}<{self.input_width}, {self.output_width}, {self.T}> {self}; \n{self.T} y{self.freq}[{self.output_width}];"
 
 
 def Cat(xl: list):
@@ -220,75 +220,4 @@ def Cat(xl: list):
 
 
 if __name__ == "__main__":
-    input_shape = (2, 64)
-
-    channels = [8, 8, 8, 8, 16]
-    kernel_sizes = [5, 3, 3, 3, 1]
-    dilations = [1, 2, 3, 4, 1]
-    attention_channels = 128
-    res2net_scale = 8
-    se_channels = 128
-    lin_neurons = 6
-
-    blocks = []
-    blocks.append(
-        TDNNBlock(
-            channel_in=2,
-            channel_out=channels[0],
-            kernel=kernel_sizes[0],
-            dilation=dilations[0],
-        )
-    )
-
-    for i in range(1, len(channels) - 1):
-        blocks.append(
-            SERes2NetBlock(
-                res2net_scale=res2net_scale,
-                se_channel=se_channels,
-                channel_in=channels[i - 1],
-                channel_out=channels[i],
-                kernel=kernel_sizes[i],
-                dilation=dilations[i],
-            )
-        )
-
-    mfa = TDNNBlock(
-        channels[-2] * (len(channels) - 2),
-        channels[-1],
-        kernel_sizes[-1],
-        dilations[-1],
-    )
-
-    # Attentive Statistical Pooling
-    asp = ASP(
-        channels[-1],
-        attention_channels=attention_channels,
-    )
-    asp_bn = BatchNorm1d(channel=channels[-1] * 2)
-
-    dense = Dense(lin_neurons)
-
-    xl = []
-    x = input_shape
-    for block in blocks:
-        x = block.forward(x)
-        xl.append(x)
-
-    x = Cat(xl[1:])
-
-    x = mfa.forward(x)
-    x = asp.forward(x)
-    x = asp_bn.forward(x)
-
-    # flatten
-    x = x[0] * x[1]
-
-    y = dense.forward(x)
-
-    for block in blocks:
-        print(block.initialisedstring())
-
-    print(mfa.initialisedstring())
-    print(asp.initialisedstring())
-    print(asp_bn.initialisedstring())
-    print(dense.initialisedstring())
+    pass

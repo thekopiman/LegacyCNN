@@ -13,6 +13,7 @@
 /**
  * @brief Construct a new Res2NetBlock<kernel, channel_in, channel_out, dilation, input_width, out_width, input_pad, scale, T>::Res2NetBlock object
  *
+ * Make sure that input_width == out_width
  * @tparam kernel
  * @tparam channel_in
  * @tparam channel_out
@@ -28,6 +29,7 @@ Res2NetBlock<kernel, channel_in, channel_out, dilation, input_width, out_width, 
 {
     assert(channel_in % scale == 0);
     assert(channel_out % scale == 0);
+    assert(input_width == out_width);
 
     // std::cout << "Res2NetBlock initialised" << std::endl;
 };

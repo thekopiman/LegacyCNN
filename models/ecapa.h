@@ -48,7 +48,7 @@ private:
     float x_cat[8 * 3][64];
     TDNNBlock<1, 1, 3 * 8, 16, 1, 64, 64, 0, float> mfa;
     float y0[16][64];
-    ASP<16, 128, 64, 2, float> asp;
+    ASP<16, 128, 64, 1, float> asp;
     float y1[32][1];
     BatchNorm1d<16 * 2, 1, float> asp_BN;
     // Flatten()

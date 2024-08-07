@@ -21,13 +21,13 @@ int main()
     ecapamodel.loadweights("ECAPAweights/fullecapa.bin");
 
     // Metrics on Read Input will not be tested
-    float input_full[10][2][64];
+    float input_full[100][2][64];
     float input[2][64];
     std::cout << "Before Loading" << std::endl;
-    Helper::readInputs("ECAPAweights/ecapainput_2x64_10.bin", input_full);
+    Helper::readInputs("ECAPAweights/ecapainput_2x64_100.bin", input_full);
     std::cout << "Complete Loading" << std::endl;
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 100; i++)
     {
         MatrixFunctions::Copy(input_full[i], input);
         ecapamodel.forward(input, y);

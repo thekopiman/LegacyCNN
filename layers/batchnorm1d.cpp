@@ -65,6 +65,24 @@ void BatchNorm1d<channel, width, T>::init()
     }
 }
 
+/**
+ * @brief The `init_temp()` function in the `BatchNorm1d` class template is initializing the parameters for each
+channel. It sets the initial values for `mean` and `variance` arrays for each channel.
+*
+* @tparam channel
+* @tparam width
+* @tparam T
+*/
+template <int channel, int width, typename T>
+void BatchNorm1d<channel, width, T>::init_temp()
+{
+    for (int i = 0; i < channel; i++)
+    {
+        this->mean[i] = 0;
+        this->variance[i] = 0;
+    }
+}
+
 template <int channel, int width, typename T>
 void BatchNorm1d<channel, width, T>::setGamma(T (&new_gamma)[channel])
 {
@@ -343,6 +361,8 @@ void BatchNorm1d<channel, width, T>::setEps(T var)
 template <int channel, int width, typename T>
 void BatchNorm1d<channel, width, T>::forward_train(T (&input)[channel][width], T (&output)[channel][width])
 {
+    init_temp();
+
     // Calculate mean E(X) first
     for (int c = 0; c < channel; c++)
     {

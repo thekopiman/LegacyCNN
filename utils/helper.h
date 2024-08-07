@@ -37,6 +37,19 @@ public:
     static void readInputs(std::string pathname, T (&inputs)[rows][cols]);
 
     /**
+     * @brief Read the .bin file and returns it to input
+     *
+     * @tparam batch
+     * @tparam rows
+     * @tparam cols
+     * @tparam T
+     * @param pathname
+     * @param inputs
+     */
+    template <size_t batch, size_t rows, size_t cols, typename T>
+    static void readInputs(std::string pathname, T (&inputs)[batch][rows][cols]);
+
+    /**
      * @brief Prints all the elements in a 1d array
      *
      * @tparam dim1
@@ -60,11 +73,24 @@ public:
      * @brief Prints all the elements in a 2d array
      *
      * @tparam dim1
+     * @tparam dim2
      * @tparam T
      * @param input
      */
     template <size_t dim1, size_t dim2, typename T>
     static void print(T (&input)[dim1][dim2]);
+
+    /**
+     * @brief Prints all the elements in a 2d array
+     *
+     * @tparam dim1
+     * @tparam dim2
+     * @tparam dim3
+     * @tparam T
+     * @param input
+     */
+    template <size_t dim1, size_t dim2, size_t dim3, typename T>
+    static void print(T (&input)[dim1][dim2][dim3]);
 };
 
 #include "helper.cpp"

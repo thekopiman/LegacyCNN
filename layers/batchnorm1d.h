@@ -101,6 +101,7 @@ private:
     T running_variance[channel];
     T eps = 1e-5;
     bool eval_mode = false;
+
     /**
      * @brief The `init()` function in the `BatchNorm1d` class template is initializing the parameters for each
     channel. It sets the initial values for `gamma`, `beta`, `mean`, `variance`, `running_mean`, and
@@ -111,6 +112,17 @@ private:
      * @tparam T
      */
     void init();
+
+    /**
+     * @brief The `init_temp()` function in the `BatchNorm1d` class template is initializing the parameters for each
+    channel. It sets the initial values for `mean` and `variance` arrays for each channel.
+     *
+     * @tparam channel
+     * @tparam width
+     * @tparam T
+     */
+    void init_temp();
+
     /**
      * @brief Forward feed during train mode
      *

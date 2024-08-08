@@ -2,7 +2,7 @@
  * @file seres2netblock.h
  * @author Kok Chin Yi (kchinyi@dso.org.sg)
  * @brief
- * @version 0.1
+ * @version 0.3
  * @date 2024-06-28
  *
  * @copyright Copyright (c) 2024
@@ -58,6 +58,41 @@ public:
      */
     SERes2NetBlock();
 
+    /**
+     * @brief Perform forward feed
+     *
+     * @tparam kernel
+     * @tparam channel_in
+     * @tparam channel_out
+     * @tparam dilation
+     * @tparam input_width
+     * @tparam out_width
+     * @tparam input_pad
+     * @tparam res2net_scale
+     * @tparam channel_se
+     * @tparam T
+     * @param input
+     * @param lengths
+     * @param output
+     */
+    void forward(T (&input)[channel_in][input_width], T (&lengths)[channel_out], T (&output)[channel_out][out_width]);
+    /**
+     * @brief Perform forward feed
+     *
+     * @tparam kernel
+     * @tparam channel_in
+     * @tparam channel_out
+     * @tparam dilation
+     * @tparam input_width
+     * @tparam out_width
+     * @tparam input_pad
+     * @tparam res2net_scale
+     * @tparam channel_se
+     * @tparam T
+     * @param input
+     * @param output
+     */
+    void forward(T (&input)[channel_in][input_width], T &lengths, T (&output)[channel_out][out_width]);
     /**
      * @brief Perform forward feed
      *

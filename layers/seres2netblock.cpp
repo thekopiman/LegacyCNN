@@ -2,7 +2,7 @@
  * @file seres2netblock.cpp
  * @author Kok Chin Yi (kchinyi@dso.org.sg)
  * @brief
- * @version 0.1
+ * @version 0.3
  * @date 2024-06-28
  *
  * @copyright Copyright (c) 2024
@@ -66,6 +66,83 @@ void SERes2NetBlock<kernel, channel_in, channel_out, dilation, input_width, out_
     this->res2net.forward(this->x1, this->x1);
     this->tdnn2.forward(this->x1, this->x1);
     this->seblock.forward(this->x1, this->x1);
+
+    // return x + residual
+    MatrixFunctions::matrixAdd(this->x1, this->residual);
+    MatrixFunctions::Copy(this->x1, output);
+}
+
+/**
+ * @brief Perform forward feed
+ *
+ * @tparam kernel
+ * @tparam channel_in
+ * @tparam channel_out
+ * @tparam dilation
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam input_pad
+ * @tparam res2net_scale
+ * @tparam channel_se
+ * @tparam T
+ * @param input
+ * @param lengths
+ * @param output
+ */
+template <int kernel, int channel_in, int channel_out, int dilation, int input_width, int out_width, int input_pad, int res2net_scale, int channel_se, typename T>
+void SERes2NetBlock<kernel, channel_in, channel_out, dilation, input_width, out_width, input_pad, res2net_scale, channel_se, T>::forward(T (&input)[channel_in][input_width], T (&lengths)[channel_out], T (&output)[channel_out][out_width])
+{
+    if (channel_in != channel_out)
+    {
+        this->shortcut.forward(input, this->residual);
+    }
+    else
+    {
+        MatrixFunctions::Copy(input, this->residual);
+    }
+
+    this->tdnn1.forward(input, this->x1);
+    this->res2net.forward(this->x1, this->x1);
+    this->tdnn2.forward(this->x1, this->x1);
+    this->seblock.forward(this->x1, lengths, this->x1);
+
+    // return x + residual
+    MatrixFunctions::matrixAdd(this->x1, this->residual);
+    MatrixFunctions::Copy(this->x1, output);
+}
+/**
+ * @brief Perform forward feed
+ *
+ * @tparam kernel
+ * @tparam channel_in
+ * @tparam channel_out
+ * @tparam dilation
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam input_pad
+ * @tparam res2net_scale
+ * @tparam channel_se
+ * @tparam T
+ * @param input
+ * @param lengths
+ * @param output
+ */
+template <int kernel, int channel_in, int channel_out, int dilation, int input_width, int out_width, int input_pad, int res2net_scale, int channel_se, typename T>
+void SERes2NetBlock<kernel, channel_in, channel_out, dilation, input_width, out_width, input_pad, res2net_scale, channel_se, T>::forward(T (&input)[channel_in][input_width], T &lengths, T (&output)[channel_out][out_width])
+{
+    if (channel_in != channel_out)
+    {
+        this->shortcut.forward(input, this->residual);
+    }
+    else
+    {
+        MatrixFunctions::Copy(input, this->residual);
+    }
+
+    this->tdnn1.forward(input, this->x1);
+    this->res2net.forward(this->x1, this->x1);
+    this->tdnn2.forward(this->x1, this->x1);
+    this->seblock.forward(this->x1, lengths, this->x1);
 
     // return x + residual
     MatrixFunctions::matrixAdd(this->x1, this->residual);

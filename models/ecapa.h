@@ -34,6 +34,7 @@ public:
     ECAPA_TDNN();
     ~ECAPA_TDNN();
     void forward(float (&input)[2][64], float (&y)[6]);
+    void forward(float (&input)[2][64], float &lengths, float (&y)[6]);
     void loadweights(std::string pathname);
 
 private:

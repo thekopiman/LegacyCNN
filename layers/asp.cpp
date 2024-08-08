@@ -2,7 +2,7 @@
  * @file asp.cpp
  * @author Kok Chin Yi (kchinyi@dso.org.sg)
  * @brief
- * @version 0.1
+ * @version 0.3
  * @date 2024-06-28
  *
  * @copyright Copyright (c) 2024
@@ -35,7 +35,7 @@ template <int channels, int attention_channels, int input_width, int out_width, 
 ASP<channels, attention_channels, input_width, out_width, T>::~ASP(){};
 
 /**
- * @brief Conputes the forward feed
+ * @brief Computes the forward feed
  *
  * @tparam channels
  * @tparam attention_channels
@@ -86,6 +86,160 @@ void ASP<channels, attention_channels, input_width, out_width, T>::forward(T (&i
         output[channels + i][0] = this->std[i];
     }
 };
+
+/**
+ * @brief Computes the forward feed
+ *
+ * Since Batch = 1, dim(lengths) == 1
+ *
+ * @tparam channels
+ * @tparam attention_channels
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam T
+ * @param input
+ * @param lengths
+ * @param output
+ */
+template <int channels, int attention_channels, int input_width, int out_width, typename T>
+void ASP<channels, attention_channels, input_width, out_width, T>::forward(T (&input)[channels][input_width], T &lengths, T (&output)[channels * 2][1])
+{
+    T tempLengths[channels];
+    assert(lengths > 0 && "Make sure that lengths contain at least a Natural number to prevent division by 0.");
+
+    for (int i = 0; i < channels; i++)
+    {
+        tempLengths[i] = lengths;
+    }
+
+    forward(input, tempLengths, output);
+}
+
+/**
+ * @brief Computes the forward feed
+ *
+ * Since Batch = 1, dim(lengths) == 1
+ *
+ * @tparam channels
+ * @tparam attention_channels
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam T
+ * @param input
+ * @param lengths
+ * @param output
+ */
+template <int channels, int attention_channels, int input_width, int out_width, typename T>
+void ASP<channels, attention_channels, input_width, out_width, T>::forward(T (&input)[channels][input_width], T (&lengths)[channels], T (&output)[channels * 2][1])
+{
+    resetMask();
+
+    bool ExistNonZero = False;
+    for (int i = 0; i < channels; i++)
+    {
+        if (lengths[i] > 0)
+        {
+            ExistNonZero = True;
+        }
+    }
+
+    assert(ExistNonZero && "Make sure that lengths contain at least a Natural number to prevent division by 0.");
+
+    // Mask here has a dim of [N, C, L] instead of the one [N, 1, L]. Where N = 1
+    // This is because Hadamard Product in MatrixFunctions requires same dimensions.
+
+    // Length to mask
+    // https://speechbrain.readthedocs.io/en/latest/_modules/speechbrain/dataio/dataio.html#length_to_mask
+
+    for (int j = 0; j < std::ceil(lengths * input_width) && j < input_width; j++)
+    {
+        for (int i = 0; i < channels; i++)
+        {
+            this->mask[i][j] = 1;
+        }
+    }
+
+    T total = MatrixFunctions::Sum(this->mask[0]);
+
+    // mask / total
+
+    for (int i = 0; i < channels; i++)
+    {
+        for (int j = 0; j < input_width; k++)
+        {
+            this->mask[i][j] /= total;
+        }
+    }
+
+    // mean, std = _compute_statistics(x, mask / total)
+    compute_statistics(input, this->mask);
+
+    // attn = torch.cat([x, mean, std], dim=1)
+    for (int i = 0; i < channels; i++)
+    {
+        for (int j = 0; j < input_width; j++)
+        {
+            this->attn[i][j] = input[i][j];
+            this->attn[channels + i][j] = this->mean[i];    // mean = mean.unsqueeze(2).repeat(1, 1, L)
+            this->attn[2 * channels + i][j] = this->std[i]; // std = std.unsqueeze(2).repeat(1, 1, L)
+        }
+    }
+
+    // Helper::print(this->attn);
+
+    // apply layers
+    this->tdnn.forward(this->attn, this->attn1);
+    ActivationFunctions::Tanh(this->attn1);
+    this->conv.forward(this->attn1, this->attn2);
+
+    // Filter out zero-paddings
+    for (int j = 0; j < input_width; j++)
+    {
+        if (this->mask[0][j] == 0)
+        {
+            for (int i = 0; i < channels; i++)
+            {
+                this->attn2[i][j] = std::numeric_limits<T>::lowest();
+            }
+        }
+    }
+
+    // Helper::print(this->attn2);
+
+    ActivationFunctions::Softmax(this->attn2);
+
+    // Helper::print(this->attn2);
+
+    // Obtain Pooled statistics
+    compute_statistics(input, attn2);
+
+    for (int i = 0; i < channels; i++)
+    {
+        output[i][0] = this->mean[i];
+        output[channels + i][0] = this->std[i];
+    }
+}
+
+/**
+ * @brief Resets the Mask to 0
+ *
+ * @tparam channels
+ * @tparam attention_channels
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam T
+ */
+template <int channels, int attention_channels, int input_width, int out_width, typename T>
+void ASP<channels, attention_channels, input_width, out_width, T>::resetMask()
+{
+    for (int i = 0; i < channels; i++)
+    {
+        for (int j = 0; j < input_width; j++)
+        {
+            this->mask[i][j] = 0;
+        }
+    }
+}
 
 /**
  * @brief Compute Statistics

@@ -2,7 +2,7 @@
  * @file batchnorm1d.cpp
  * @author Kok Chin Yi (kchinyi@dso.org.sg)
  * @brief
- * @version 0.1
+ * @version 0.2
  * @date 2024-06-28
  *
  * @copyright Copyright (c) 2024

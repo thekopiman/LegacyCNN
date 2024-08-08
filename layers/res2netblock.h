@@ -2,7 +2,7 @@
  * @file res2netblock.h
  * @author Kok Chin Yi (kchinyi@dso.org.sg)
  * @brief
- * @version 0.1
+ * @version 0.3
  * @date 2024-06-28
  *
  * @copyright Copyright (c) 2024
@@ -53,6 +53,42 @@ public:
      * @param output
      */
     void forward(T (&input)[channel_in][input_width], T (&output)[channel_out][out_width]);
+
+    /**
+     * @brief Perform Forward feed
+     *
+     * @tparam kernel
+     * @tparam channel_in
+     * @tparam channel_out
+     * @tparam dilation
+     * @tparam input_width
+     * @tparam out_width
+     * @tparam input_pad
+     * @tparam scale
+     * @tparam T
+     * @param input
+     * @param lengths
+     * @param output
+     */
+    void forward(T (&input)[channel_in][input_width], T &lengths, T (&output)[channel_out][out_width]);
+
+    /**
+     * @brief Perform Forward feed
+     *
+     * @tparam kernel
+     * @tparam channel_in
+     * @tparam channel_out
+     * @tparam dilation
+     * @tparam input_width
+     * @tparam out_width
+     * @tparam input_pad
+     * @tparam scale
+     * @tparam T
+     * @param input
+     * @param lengths
+     * @param output
+     */
+    void forward(T (&input)[channel_in][input_width], T (&lengths)[channel_in], T (&output)[channel_out][out_width]);
 
     ~Res2NetBlock();
 

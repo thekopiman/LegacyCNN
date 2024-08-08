@@ -2,7 +2,7 @@
  * @file asp.h
  * @author Kok Chin Yi (kchinyi@dso.org.sg)
  * @brief
- * @version 0.1
+ * @version 0.3
  * @date 2024-06-28
  *
  * @copyright Copyright (c) 2024
@@ -57,7 +57,7 @@ public:
      */
     ~ASP();
     /**
-     * @brief Conputes the forward feed
+     * @brief Computes the forward feed
      *
      * @tparam channels
      * @tparam attention_channels
@@ -68,6 +68,36 @@ public:
      * @param output
      */
     void forward(T (&input)[channels][input_width], T (&output)[channels * 2][1]);
+    /**
+     * @brief Computes the forward feed
+     *
+     * Since Batch = 1, dim(lengths) == 1
+     *
+     * @tparam channels
+     * @tparam attention_channels
+     * @tparam input_width
+     * @tparam out_width
+     * @tparam T
+     * @param input
+     * @param lengths
+     * @param output
+     */
+    void forward(T (&input)[channels][input_width], T &lengths, T (&output)[channels * 2][1]);
+    /**
+     * @brief Computes the forward feed
+     *
+     * Since Batch = 1, dim(lengths) == 1
+     *
+     * @tparam channels
+     * @tparam attention_channels
+     * @tparam input_width
+     * @tparam out_width
+     * @tparam T
+     * @param input
+     * @param lengths
+     * @param output
+     */
+    void forward(T (&input)[channels][input_width], T (&lengths)[channels], T (&output)[channels * 2][1]);
     /**
      * @brief Loadweights via pathname
      *
@@ -99,6 +129,7 @@ private:
     T attn2[channels][input_width];
     T mean[channels];
     T std[channels];
+    T mask[channels][input_width];
 
     /**
      * @brief Compute Statistics
@@ -112,6 +143,17 @@ private:
      * @param output
      */
     void compute_statistics(T (&x)[channels][input_width], T (&m)[channels][input_width]);
+
+    /**
+     * @brief Resets the Mask to 0
+     *
+     * @tparam channels
+     * @tparam attention_channels
+     * @tparam input_width
+     * @tparam out_width
+     * @tparam T
+     */
+    void resetMask()
 };
 
 #include "asp.cpp"

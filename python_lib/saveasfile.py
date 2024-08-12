@@ -84,14 +84,17 @@ class BlockSave:
                 f.write(np.array(weight_dim, dtype=np.int32).tobytes())
                 f.write(flatten_weights.tobytes())
 
-                # Bias
-                bias = layer.bias.cpu().detach().numpy()
-                bias_dim = bias.shape
-                flatten_bias = bias.flatten()
+                # Bias - Except Classifier
+                try:
+                    bias = layer.bias.cpu().detach().numpy()
+                    bias_dim = bias.shape
+                    flatten_bias = bias.flatten()
 
-                # Write to bin file (bias)
-                f.write(np.array(bias_dim, dtype=np.int32).tobytes())
-                f.write(flatten_bias.tobytes())
+                    # Write to bin file (bias)
+                    f.write(np.array(bias_dim, dtype=np.int32).tobytes())
+                    f.write(flatten_bias.tobytes())
+                except AttributeError:
+                    pass
 
                 # For Batch Norm Only
                 try:

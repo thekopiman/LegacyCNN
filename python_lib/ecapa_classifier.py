@@ -485,6 +485,7 @@ class ECAPA_TDNN(torch.nn.Module):
         se_channels=128,
         global_context=True,
         groups=[1, 1, 1, 1, 1],
+        metrics_type="cosine",  # consine, cdist, euclidean
     ):
         super().__init__()
         assert len(channels) == len(kernel_sizes)
@@ -537,14 +538,19 @@ class ECAPA_TDNN(torch.nn.Module):
         )
         self.asp_bn = BatchNorm1d(input_size=channels[-1] * 2)
 
-        # # Final linear transformation
+        # Final linear transformation
         self.fc = Conv1d(
             in_channels=channels[-1] * 2,
             out_channels=lin_neurons,
             kernel_size=1,
         )
 
-        self.probabilities = Classifier(lin_neurons, device, out_neurons)
+        self.probabilities = Classifier(
+            input_size=lin_neurons,
+            out_neurons=out_neurons,
+            device=device,
+            metrics_type=metrics_type,
+        )
 
         # Final Dense Layer
         # self.final = nn.Sequential(
@@ -603,7 +609,8 @@ class ECAPA_TDNN(torch.nn.Module):
         lst += self.mfa.return_layers()
         lst += self.asp.return_layers()
         lst += self.asp_bn.return_layers()
-        lst += [self.final[1]]
+        # lst += [self.final[1]]
+        lst += self.fc.return_layers()
         lst += self.probabilities.return_layers()
         return lst
 
@@ -634,9 +641,7 @@ class Classifier(torch.nn.Module):
 
         self.metrics_type = metrics_type
 
-        self.weight = nn.Parameter(
-            torch.FloatTensor(out_neurons, input_size, device=device)
-        )
+        self.weight = nn.Parameter(torch.randn((input_size, out_neurons)).to(device))
         nn.init.xavier_uniform_(self.weight)
 
     def forward(self, x):
@@ -654,14 +659,14 @@ class Classifier(torch.nn.Module):
         """
 
         if self.metrics_type == "cosine":
-            x = F.linear(F.normalize(x.squeeze(1)), F.normalize(self.weight))
-            return x.unsqueeze(1)
+            x = F.linear(F.normalize(x), F.normalize(self.weight))
+            return x
         elif self.metrics_type == "cdist":
             x = torch.cdist(x, self.weight)
             return x
         elif self.metrics_type == "euclidean":
-            x = torch._euclidean_dist(x, self.weight)
-            return x
+            x = (x - self.weight).pow(2).sum(-1).sqrt()
+            return x.unsqueeze(-1)
 
     def return_layers(self) -> list:
         return [self]

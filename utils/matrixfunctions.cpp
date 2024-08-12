@@ -528,3 +528,198 @@ void MatrixFunctions::Reshape(T (&input)[dim1][dim2], T (&output)[dim1])
         output[i] = input[i][0];
     }
 };
+
+/**
+ * @brief Performs Norm; Default: L2 Norm
+ *
+ * @tparam dim1
+ * @tparam T
+ * @param A
+ * @param B
+ * @param output
+ */
+template <size_t dim1, size_t dim2, typename T>
+T MatrixFunctions::Norm(T (&A)[dim1], T (&B)[dim1])
+{
+    T temp = 0;
+    // Calculate Norm
+    for (int i = 0; i < dim1; i++)
+    {
+        temp += (T)std::pow(A[i] - B[i], 2);
+    }
+
+    return (T)std::sqrt(temp);
+};
+
+/**
+ * @brief Performs Norm; L2 Norm
+ *
+ * @tparam dim1
+ * @tparam T
+ * @param A
+ * @param B
+ * @param output
+ * @param p
+ */
+template <size_t dim1, size_t dim2, typename T>
+T MatrixFunctions::Norm(T (&A)[dim1], T (&B)[dim1], int p)
+{
+    T temp = 0;
+
+    assert(p > 0 && "p must be an integer more than 0");
+    // Calculate Norm
+    for (int i = 0; i < dim1; i++)
+    {
+        temp += (T)std::pow(A[i] - B[i], p);
+    }
+
+    return (T)std::pow(temp, 1.0 / p);
+};
+
+/**
+ * @brief Performs L2Normalisation; Inplace
+ *
+ * @tparam dim1
+ * @tparam dim2
+ * @tparam T
+ * @param input
+ */
+template <size_t dim1, size_t dim2, typename T>
+void MatrixFunctions::L2Normalisation(T (&input)[dim1][dim2])
+{
+    // We use the euclidean distance for inner product here
+    T norm[dim1];
+
+    // Reset
+    for (int i = 0; i < dim1; i++)
+    {
+        norm[i] = 0;
+    }
+
+    // Calculate Norm
+    for (int i = 0; i < dim1; i++)
+    {
+        for (int j = 0; j < dim2; j++)
+        {
+            norm[i] += input[i][j] * input[i][j];
+        }
+
+        // To save space, we calculate norm inplace
+        norm[i] = std::sqrt(norm[i]);
+
+        // L2 Norm
+        for (int j = 0; j < dim2; j++)
+        {
+            norm[i] = Clamp(norm[i], 1e-12); // Prevent division by 0
+            input[i][j] /= norm[i];
+        }
+    }
+};
+
+/**
+ * @brief Performs Transposition
+ *
+ * output = input.T
+ *
+ * @tparam dim1
+ * @tparam dim2
+ * @tparam T
+ * @param input
+ * @param output
+ */
+template <size_t dim1, size_t dim2, typename T>
+void MatrixFunctions::Transpose(T (&input)[dim1][dim2], T (&output)[dim2][dim1])
+{
+    for (int i = 0; i < dim1; i++)
+    {
+        for (int j = 0; j < dim2; j++)
+        {
+            output[j][i] = input[i][j];
+        }
+    }
+}
+
+/**
+ * @brief Performs Dot Product (2D)
+ *
+ * output = A dot B
+ *
+ * Make sure to check the shape properly
+ *
+ * @tparam dim1
+ * @tparam dim2
+ * @tparam T
+ * @param A
+ * @param B
+ * @param output
+ */
+template <size_t dim1, size_t dim2, size_t dim3, typename T>
+void MatrixFunctions::DotProduct(T (&A)[dim1][dim2], T (&B)[dim2][dim3], T (&output)[dim1][dim3])
+{
+    // Reset
+    for (int i = 0; i < dim1; ++i)
+    {
+        for (int j = 0; j < dim3; ++j)
+        {
+            output[i][j] = 0;
+        }
+    }
+
+    // Perform the dot product
+    for (int i = 0; i < dim1; ++i)
+    {
+        for (int j = 0; j < dim3; ++j)
+        {
+            for (int k = 0; k < dim2; ++k)
+            {
+                output[i][j] += A[i][k] * B[k][j];
+            }
+        }
+    }
+};
+
+/**
+ * @brief Performs cdist (2D) - p = 2
+ *
+ * https://pytorch.org/docs/stable/generated/torch.cdist.html
+ *
+ * Make sure to check the shape properly
+ *
+ * @tparam dim11
+ * @tparam dim2
+ * @tparam T
+ * @param A
+ * @param B
+ * @param output
+ */
+template <size_t dim1, size_t dim2, size_t dim3, typename T>
+void MatrixFunctions::CDist(T (&A)[dim1][dim2], T (&B)[dim3][dim2], T (&output)[dim1][dim3])
+{
+    CDist(A, B, output, 2);
+};
+
+/**
+ * @brief Performs cdist (2D) - variable p
+ *
+ * https://pytorch.org/docs/stable/generated/torch.cdist.html
+ *
+ * Make sure to check the shape properly
+ *
+ * @tparam dim11
+ * @tparam dim2
+ * @tparam T
+ * @param A
+ * @param B
+ * @param output
+ */
+template <size_t dim1, size_t dim2, size_t dim3, typename T>
+void MatrixFunctions::CDist(T (&A)[dim1][dim2], T (&B)[dim3][dim2], T (&output)[dim1][dim3], int p)
+{
+    for (int i = 0; i < dim1; i++)
+    {
+        for (int j = 0; j < dim3; j++)
+        {
+            output[i][j] = Norm(A[i], B[j], p)
+        }
+    }
+};

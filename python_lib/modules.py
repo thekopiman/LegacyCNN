@@ -635,21 +635,10 @@ class Classifier(torch.nn.Module):
         self,
         input_size,
         device="cpu",
-        lin_blocks=0,
-        lin_neurons=192,
         out_neurons=1211,
     ):
         super().__init__()
         self.blocks = nn.ModuleList()
-
-        for block_index in range(lin_blocks):
-            self.blocks.extend(
-                [
-                    _BatchNorm1d(input_size=input_size),
-                    Linear(input_size=input_size, n_neurons=lin_neurons),
-                ]
-            )
-            input_size = lin_neurons
 
         # Final Layer
         self.weight = nn.Parameter(

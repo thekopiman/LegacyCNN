@@ -30,7 +30,11 @@
  * - Clamp
  * - Std
  * - Reshape
- *
+ * - Norm
+ * - L2Normalisation
+ * - Transpose
+ * - DotProduct
+ * - CDist
  */
 class MatrixFunctions
 {
@@ -327,6 +331,108 @@ public:
      */
     template <size_t dim1, size_t dim2, typename T>
     static void Reshape(T (&input)[dim1][dim2], T (&output)[dim1]);
+
+    /**
+     * @brief Performs Norm; Default: L2 Norm
+     *
+     * @tparam dim1
+     * @tparam T
+     * @param A
+     * @param B
+     * @param output
+     */
+    template <size_t dim1, size_t dim2, typename T>
+    static T Norm(T (&A)[dim1], T (&B)[dim1]);
+
+    /**
+     * @brief Performs Norm; L_{p} Norm
+     *
+     * @tparam dim1
+     * @tparam T
+     * @param A
+     * @param B
+     * @param output
+     * @param p
+     */
+    template <size_t dim1, size_t dim2, typename T>
+    static T Norm(T (&A)[dim1], T (&B)[dim1], int p);
+
+    /**
+     * @brief Performs L2Normalisation; Inplace
+     *
+     * @tparam dim1
+     * @tparam dim2
+     * @tparam T
+     * @param input
+     */
+    template <size_t dim1, size_t dim2, typename T>
+    static void L2Normalisation(T (&input)[dim1][dim2]);
+
+    /**
+     * @brief Performs Transposition
+     *
+     * output = input.T
+     *
+     * @tparam dim1
+     * @tparam dim2
+     * @tparam T
+     * @param input
+     * @param output
+     */
+    template <size_t dim1, size_t dim2, typename T>
+    static void Transpose(T (&input)[dim1][dim2], T (&output)[dim2][dim1]);
+
+    /**
+     * @brief Performs Dot Product (2D)
+     *
+     * output = A dot B
+     *
+     * Make sure to check the shape properly
+     *
+     * @tparam dim1
+     * @tparam dim2
+     * @tparam T
+     * @param A
+     * @param B
+     * @param output
+     */
+    template <size_t dim1, size_t dim2, size_t dim3, typename T>
+    static void DotProduct(T (&A)[dim1][dim2], T (&B)[dim2][dim3], T (&output)[dim1][dim3]);
+
+    /**
+     * @brief Performs cdist (2D) :
+     *
+     * https://pytorch.org/docs/stable/generated/torch.cdist.html
+     *
+     * Make sure to check the shape properly
+     *
+     * @tparam dim1
+     * @tparam dim2
+     * @tparam T
+     * @param A
+     * @param B
+     * @param output
+     */
+    template <size_t dim1, size_t dim2, size_t dim3, typename T>
+    static void CDist(T (&A)[dim1][dim2], T (&B)[dim3][dim2], T (&output)[dim1][dim3]);
+
+    /**
+     * @brief Performs cdist (2D)
+     *
+     * https://pytorch.org/docs/stable/generated/torch.cdist.html
+     *
+     * Make sure to check the shape properly
+     *
+     * @tparam dim1
+     * @tparam dim2
+     * @tparam T
+     * @param A
+     * @param B
+     * @param output
+     * @param p
+     */
+    template <size_t dim1, size_t dim2, size_t dim3, typename T>
+    static void CDist(T (&A)[dim1][dim2], T (&B)[dim3][dim2], T (&output)[dim1][dim3], int p);
 };
 
 #include "matrixfunctions.cpp"

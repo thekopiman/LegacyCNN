@@ -90,6 +90,7 @@ private:
     T weights_T[input_width][out_width];
     T flat_matrix[input_width * out_width];
     T input_copy[channels][input_width];
+    T input_copy_T[input_width][channels];
 };
 
 #include "cosinesimilarity.cpp"

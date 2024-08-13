@@ -602,15 +602,22 @@ void MatrixFunctions::L2Normalisation(T (&input)[dim1][dim2])
     {
         for (int j = 0; j < dim2; j++)
         {
-            norm[i] += input[i][j] * input[i][j];
+            norm[i] += (T)(input[i][j] * input[i][j]);
         }
 
         // To save space, we calculate norm inplace
-        norm[i] = MatrixFunctions::Clamp((T)std::sqrt(norm[i]), (T)1e-12); // Prevent division by 0
+
+        if (norm[i] < 1e-12)
+        {
+            norm[i] = 1e-12;
+        }
+
+        // Prevent division by 0
+
         // L2 Norm
         for (int j = 0; j < dim2; j++)
         {
-            input[i][j] /= norm[i];
+            input[i][j] = (T)(input[i][j] / std::sqrt(norm[i]));
         }
     }
 };
@@ -629,11 +636,13 @@ void MatrixFunctions::L2Normalisation(T (&input)[dim1][dim2])
 template <size_t dim1, size_t dim2, typename T>
 void MatrixFunctions::Transpose(T (&input)[dim1][dim2], T (&output)[dim2][dim1])
 {
+    T temp[dim1][dim2];
+    MatrixFunctions::Copy(input, temp);
     for (int i = 0; i < dim1; i++)
     {
         for (int j = 0; j < dim2; j++)
         {
-            output[j][i] = input[i][j];
+            output[j][i] = temp[i][j];
         }
     }
 }
@@ -671,7 +680,7 @@ void MatrixFunctions::DotProduct(T (&A)[dim1][dim2], T (&B)[dim2][dim3], T (&out
         {
             for (int k = 0; k < dim2; ++k)
             {
-                output[i][j] += A[i][k] * B[k][j];
+                output[i][j] += (T)A[i][k] * B[k][j];
             }
         }
     }

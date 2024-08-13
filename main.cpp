@@ -16,7 +16,7 @@ int main()
 
     // Initialise model
     // ECAPA_TDNN ecapamodel;
-    ECAPA_TDNN_classifier ecapamodel(false);
+    ECAPA_TDNN_classifier ecapamodel(true);
     float y[6][6];
 
     // Load weights
@@ -25,9 +25,7 @@ int main()
     // Metrics on Read Input will not be tested
     // float input_full[100][2][64];
     float input[2][64];
-    std::cout << "Before Loading" << std::endl;
     Helper::readInputs("ECAPAweights/ecapainput_2x64.bin", input);
-    std::cout << "Complete Loading" << std::endl;
 
     ecapamodel.forward(input, y);
     Helper::print(y);

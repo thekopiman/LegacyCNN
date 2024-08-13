@@ -73,6 +73,7 @@ public:
      * @tparam out_width
      * @tparam T
      * @param input
+     * @param lengths
      * @param output
      */
     void forward(T (&input)[channel_in][input_width], T &lengths, T (&output)[channel_out][out_width]);
@@ -86,6 +87,7 @@ public:
      * @tparam out_width
      * @tparam T
      * @param input
+     * @param lengths
      * @param output
      */
     void forward(T (&input)[channel_in][input_width], T (&lengths)[channel_in], T (&output)[channel_out][out_width]);

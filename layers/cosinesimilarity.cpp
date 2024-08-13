@@ -49,9 +49,14 @@ void CosineSimilarity<channels, input_width, out_width, T>::forward(T (&input)[c
     // Make a duplicate since L2Norm is inplace
     MatrixFunctions::Copy(input, this->input_copy);
 
-    MatrixFunctions::L2Normalisation(input_copy);
-    // L2Norm + Transpose has been done during weights loading
+    // We cannot apply L2Norm here directly. Since we need it to be applied on dim = 0. But this function is applied on dim = 1.
+    // We use a trick here, we transpose input first before L2Norm. Then we Transpose it back again.
+    MatrixFunctions::Transpose(this->input_copy, this->input_copy_T);
 
+    MatrixFunctions::L2Normalisation(this->input_copy_T);
+    MatrixFunctions::Transpose(this->input_copy_T, this->input_copy);
+
+    // L2Norm + Transpose has been done during weights loading
     MatrixFunctions::DotProduct(input_copy, this->weights_T, output);
 };
 

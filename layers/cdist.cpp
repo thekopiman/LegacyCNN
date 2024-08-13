@@ -105,6 +105,8 @@ void CDist<channels, input_width, out_width, T>::loadweights(std::ifstream &infi
             this->weights[i][j] = (T)this->flat_matrix[i * dim2 + j];
         }
     }
+
+    Helper::print(this->weights);
 };
 
 /**

@@ -538,7 +538,7 @@ void MatrixFunctions::Reshape(T (&input)[dim1][dim2], T (&output)[dim1])
  * @param B
  * @param output
  */
-template <size_t dim1, size_t dim2, typename T>
+template <size_t dim1, typename T>
 T MatrixFunctions::Norm(T (&A)[dim1], T (&B)[dim1])
 {
     T temp = 0;
@@ -561,12 +561,13 @@ T MatrixFunctions::Norm(T (&A)[dim1], T (&B)[dim1])
  * @param output
  * @param p
  */
-template <size_t dim1, size_t dim2, typename T>
+template <size_t dim1, typename T>
 T MatrixFunctions::Norm(T (&A)[dim1], T (&B)[dim1], int p)
 {
+    assert(p > 0 && "p must be an integer more than 0");
+
     T temp = 0;
 
-    assert(p > 0 && "p must be an integer more than 0");
     // Calculate Norm
     for (int i = 0; i < dim1; i++)
     {
@@ -605,12 +606,10 @@ void MatrixFunctions::L2Normalisation(T (&input)[dim1][dim2])
         }
 
         // To save space, we calculate norm inplace
-        norm[i] = std::sqrt(norm[i]);
-
+        norm[i] = MatrixFunctions::Clamp((T)std::sqrt(norm[i]), (T)1e-12); // Prevent division by 0
         // L2 Norm
         for (int j = 0; j < dim2; j++)
         {
-            norm[i] = Clamp(norm[i], 1e-12); // Prevent division by 0
             input[i][j] /= norm[i];
         }
     }
@@ -719,7 +718,7 @@ void MatrixFunctions::CDist(T (&A)[dim1][dim2], T (&B)[dim3][dim2], T (&output)[
     {
         for (int j = 0; j < dim3; j++)
         {
-            output[i][j] = Norm(A[i], B[j], p)
+            output[i][j] = MatrixFunctions::Norm(A[i], B[j], p);
         }
     }
 };

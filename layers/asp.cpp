@@ -134,12 +134,12 @@ void ASP<channels, attention_channels, input_width, out_width, T>::forward(T (&i
 {
     resetMask();
 
-    bool ExistNonZero = False;
+    bool ExistNonZero = false;
     for (int i = 0; i < channels; i++)
     {
         if (lengths[i] > 0)
         {
-            ExistNonZero = True;
+            ExistNonZero = true;
         }
     }
 
@@ -151,23 +151,22 @@ void ASP<channels, attention_channels, input_width, out_width, T>::forward(T (&i
     // Length to mask
     // https://speechbrain.readthedocs.io/en/latest/_modules/speechbrain/dataio/dataio.html#length_to_mask
 
-    for (int j = 0; j < std::ceil(lengths * input_width) && j < input_width; j++)
+    for (int i = 0; i < channels; i++)
     {
-        for (int i = 0; i < channels; i++)
+        for (int j = 0; j < std::ceil(lengths[i] * input_width) && j < input_width; j++)
         {
             this->mask[i][j] = 1;
         }
+        this->total[i] = MatrixFunctions::Sum(this->mask[i]);
     }
-
-    T total = MatrixFunctions::Sum(this->mask[0]);
 
     // mask / total
 
     for (int i = 0; i < channels; i++)
     {
-        for (int j = 0; j < input_width; k++)
+        for (int j = 0; j < input_width; j++)
         {
-            this->mask[i][j] /= total;
+            this->mask[i][j] /= this->total[i];
         }
     }
 
@@ -238,6 +237,7 @@ void ASP<channels, attention_channels, input_width, out_width, T>::resetMask()
         {
             this->mask[i][j] = 0;
         }
+        this->total[i] = 0;
     }
 }
 

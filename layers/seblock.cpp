@@ -76,12 +76,12 @@ void SEBlock<channel_in, channel_se, channel_out, input_width, out_width, T>::fo
 {
     resetMask();
 
-    bool ExistNonZero = False;
+    bool ExistNonZero = false;
     for (int i = 0; i < channel_in; i++)
     {
         if (lengths[i] > 0)
         {
-            ExistNonZero = True;
+            ExistNonZero = true;
         }
     }
 
@@ -93,32 +93,31 @@ void SEBlock<channel_in, channel_se, channel_out, input_width, out_width, T>::fo
     // Length to mask
     // https://speechbrain.readthedocs.io/en/latest/_modules/speechbrain/dataio/dataio.html#length_to_mask
 
-    for (int j = 0; j < std::ceil(lengths * input_width) && j < input_width; j++)
+    for (int i = 0; i < channel_in; i++)
     {
-        for (int i = 0; i < channel_in; i++)
+        for (int j = 0; j < std::ceil(lengths[i] * input_width) && j < input_width; j++)
         {
             this->mask[i][j] = 1;
         }
+        this->total[i] = MatrixFunctions::Sum(this->mask[i]);
     }
 
     // mask / total
 
     for (int i = 0; i < channel_in; i++)
     {
-        for (int j = 0; j < input_width; k++)
+        for (int j = 0; j < input_width; j++)
         {
-            this->mask[i][j] /= total;
+            this->mask[i][j] /= this->total[i];
         }
     }
-
-    T total = MatrixFunctions::Sum(this->mask[0]);
 
     T s[channel_in][input_width];
     MatrixFunctions::HadamardProduct(input, this->mask, s);
 
     for (int i = 0; i < channel_in; i++)
     {
-        mean[i][0] = MatrixFunctions::Sum(s[i]) / total;
+        mean[i][0] = MatrixFunctions::Sum(s[i]) / this->total[i];
     }
 
     layer0.forward(mean, temp);
@@ -223,5 +222,6 @@ void SEBlock<channel_in, channel_se, channel_out, input_width, out_width, T>::re
         {
             this->mask[i][j] = 0;
         }
+        this->total[i] = 0;
     }
 }

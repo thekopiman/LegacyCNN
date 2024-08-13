@@ -124,6 +124,7 @@ private:
     T mean[channel_in][1];
     T temp2[channel_out];
     T mask[channel_in][input_width];
+    T total[channel_in];
 
     /**
      * @brief Resets the Mask to 0
@@ -135,7 +136,8 @@ private:
      * @tparam out_width
      * @tparam T
      */
-    void resetMask()
+    void
+    resetMask();
 };
 
 #include "seblock.cpp"

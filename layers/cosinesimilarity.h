@@ -88,7 +88,7 @@ public:
 private:
     T weights[out_width][input_width];
     T weights_T[input_width][out_width];
-    T flat_matrix[channel_out * channel_in * kernel];
+    T flat_matrix[input_width * out_width];
     T input_copy[channels][input_width];
 };
 

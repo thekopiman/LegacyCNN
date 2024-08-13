@@ -341,7 +341,7 @@ public:
      * @param B
      * @param output
      */
-    template <size_t dim1, size_t dim2, typename T>
+    template <size_t dim1, typename T>
     static T Norm(T (&A)[dim1], T (&B)[dim1]);
 
     /**
@@ -354,7 +354,7 @@ public:
      * @param output
      * @param p
      */
-    template <size_t dim1, size_t dim2, typename T>
+    template <size_t dim1, typename T>
     static T Norm(T (&A)[dim1], T (&B)[dim1], int p);
 
     /**

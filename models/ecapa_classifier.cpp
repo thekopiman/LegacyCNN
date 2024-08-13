@@ -51,50 +51,9 @@ void ECAPA_TDNN_classifier::forward(float (&input)[2][64], float (&y)[6][6])
     ActivationFunctions::Softmax(y);
 };
 
-void ECAPA_TDNN_classifier::forward(float (&input)[2][64], float &lengths, float (&y)[6][6])
-{
-    initiallayer.forward(input, x0);
-
-    seres_1.forward(x0, lengths, x1);
-
-    seres_2.forward(x1, lengths, x2);
-
-    seres_3.forward(x2, lengths, x3);
-
-    // Cat
-    for (int i = 0; i < 8; i++)
-    {
-        for (int j = 0; j < 64; j++)
-        {
-            x_cat[i][j] = x1[i][j];
-            x_cat[8 + i][j] = x2[i][j];
-            x_cat[16 + i][j] = x3[i][j];
-        }
-    }
-
-    mfa.forward(x_cat, y0);
-
-    asp.forward(y0, lengths, y1);
-
-    asp_BN.forward(y1, y1);
-
-    fc.forward(y1, y2);
-
-    if (this->isCosineBool)
-    {
-        CosineClassifier.forward(y2, y);
-    }
-    else
-    {
-        CDistClassifier.forward(y2, y);
-    }
-
-    ActivationFunctions::Softmax(y);
-};
-
 ECAPA_TDNN_classifier::ECAPA_TDNN_classifier(bool isCosine) : asp_BN(1), isCosineBool(isCosine)
 {
-    std::cout << "ECAPA TDNN initialised in Eval Mode" << std::endl;
+    std::cout << "ECAPA TDNN Classifier initialised in Eval Mode" << std::endl;
 };
 
 ECAPA_TDNN_classifier::~ECAPA_TDNN_classifier() {
@@ -111,40 +70,42 @@ void ECAPA_TDNN_classifier::loadweights(std::string pathname)
 
     // Initial Layer
     initiallayer.loadweights(infile);
-    // std::cout << "Initial Layer Loaded" << std::endl;
+    std::cout << "Initial Layer Loaded" << std::endl;
 
     // Seres
     seres_1.loadweights(infile);
-    // std::cout << "SERES 1 Loaded" << std::endl;
+    std::cout << "SERES 1 Loaded" << std::endl;
     seres_2.loadweights(infile);
-    // std::cout << "SERES 2 Loaded" << std::endl;
+    std::cout << "SERES 2 Loaded" << std::endl;
     seres_3.loadweights(infile);
-    // std::cout << "SERES 3 Loaded" << std::endl;
+    std::cout << "SERES 3 Loaded" << std::endl;
 
     // mfa
     mfa.loadweights(infile);
-    // std::cout << "mfa Loaded" << std::endl;
+    std::cout << "mfa Loaded" << std::endl;
 
     // asp
     asp.loadweights(infile);
-    // std::cout << "asp Loaded" << std::endl;
+    std::cout << "asp Loaded" << std::endl;
 
     // ASP BN
     asp_BN.loadweights(infile);
-    // std::cout << "asp bn Loaded" << std::endl;
+    std::cout << "asp bn Loaded" << std::endl;
 
     // fc
     fc.loadweights(infile);
-    // std::cout << "fc Loaded" << std::endl;
+    std::cout << "fc Loaded" << std::endl;
 
     // Classifier
     if (this->isCosineBool)
     {
         CosineClassifier.loadweights(infile);
+        std::cout << "CosineClassifier Loaded" << std::endl;
     }
     else
     {
         CDistClassifier.loadweights(infile);
+        std::cout << "CDistClassifier Loaded" << std::endl;
     }
 
     infile.close();

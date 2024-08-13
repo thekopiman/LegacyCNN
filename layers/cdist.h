@@ -19,6 +19,14 @@
 #include <limits>
 #include <fstream>
 
+/**
+ * @brief Performs CDist
+ *
+ * @tparam channels
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam T
+ */
 template <int channels, int input_width, int out_width, typename T>
 class CDist
 {
@@ -33,7 +41,7 @@ public:
 private:
     T weights[out_width][input_width];
     T weights_T[input_width][out_width];
-    T flat_matrix[channel_out * channel_in * kernel];
+    T flat_matrix[input_width * out_width];
     T input_copy[channels][input_width];
 };
 

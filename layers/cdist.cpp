@@ -33,12 +33,48 @@ CDist<channels, input_width, out_width, T>::CDist(){};
 template <int channels, int input_width, int out_width, typename T>
 CDist<channels, input_width, out_width, T>::~CDist(){};
 
+/**
+ * @brief Performs CDist with variable p (integer) where p > 0
+ *
+ * @tparam channels
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam T
+ * @param input
+ * @param output
+ * @param p
+ */
 template <int channels, int input_width, int out_width, typename T>
 void CDist<channels, input_width, out_width, T>::forward(T (&input)[channels][input_width], T (&output)[channels][out_width], int p)
 {
     MatrixFunctions::CDist(input, this->weights, output, p);
 };
 
+/**
+ * @brief Performs CDist where p = 2
+ *
+ * @tparam channels
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam T
+ * @param input
+ * @param output
+ */
+template <int channels, int input_width, int out_width, typename T>
+void CDist<channels, input_width, out_width, T>::forward(T (&input)[channels][input_width], T (&output)[channels][out_width])
+{
+    MatrixFunctions::CDist(input, this->weights, output, 2);
+};
+
+/**
+ * @brief Loadweights via infile
+ *
+ * @tparam channels
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam T
+ * @param infile
+ */
 template <int channels, int input_width, int out_width, typename T>
 void CDist<channels, input_width, out_width, T>::loadweights(std::ifstream &infile)
 {
@@ -71,6 +107,15 @@ void CDist<channels, input_width, out_width, T>::loadweights(std::ifstream &infi
     }
 };
 
+/**
+ * @brief Loadweights via pathname
+ *
+ * @tparam channels
+ * @tparam input_width
+ * @tparam out_width
+ * @tparam T
+ * @param pathname
+ */
 template <int channels, int input_width, int out_width, typename T>
 void CDist<channels, input_width, out_width, T>::loadweights(std::string pathname)
 {

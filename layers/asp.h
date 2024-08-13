@@ -130,6 +130,7 @@ private:
     T mean[channels];
     T std[channels];
     T mask[channels][input_width];
+    T total[channels];
 
     /**
      * @brief Compute Statistics
@@ -153,7 +154,7 @@ private:
      * @tparam out_width
      * @tparam T
      */
-    void resetMask()
+    void resetMask();
 };
 
 #include "asp.cpp"

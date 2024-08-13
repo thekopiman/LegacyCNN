@@ -10,6 +10,12 @@
  */
 #include "ecapa_classifier.h"
 
+/**
+ * @brief Forward for CDist/Cosine without lengths
+ *
+ * @param input
+ * @param y
+ */
 void ECAPA_TDNN_classifier::forward(float (&input)[2][64], float (&y)[6][6])
 {
     initiallayer.forward(input, x0);
@@ -39,18 +45,76 @@ void ECAPA_TDNN_classifier::forward(float (&input)[2][64], float (&y)[6][6])
 
     fc.forward(y1, y2);
 
-    if (this->isCosineBool)
+    if (ClassifierNumber == 0)
     {
         CosineClassifier.forward(y2, y);
     }
-    else
+    else if (ClassifierNumber == 1)
     {
         CDistClassifier.forward(y2, y);
+    }
+    else
+    {
+        assert(false && "Classifier Number must be 0, 1 or 2.");
     }
 
     ActivationFunctions::Softmax(y);
 };
 
+/**
+ * @brief Forward for Euclidean without lengths
+ *
+ * @param input
+ * @param y
+ */
+void ECAPA_TDNN_classifier::forward(float (&input)[2][64], float (&y)[6])
+{
+    initiallayer.forward(input, x0);
+
+    seres_1.forward(x0, x1);
+
+    seres_2.forward(x1, x2);
+
+    seres_3.forward(x2, x3);
+
+    // Cat
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 64; j++)
+        {
+            x_cat[i][j] = x1[i][j];
+            x_cat[8 + i][j] = x2[i][j];
+            x_cat[16 + i][j] = x3[i][j];
+        }
+    }
+
+    mfa.forward(x_cat, y0);
+
+    asp.forward(y0, y1);
+
+    asp_BN.forward(y1, y1);
+
+    fc.forward(y1, y2);
+
+    if (ClassifierNumber == 2)
+    {
+        EuclideanClassifier.forward(y2, y);
+    }
+    else
+    {
+        assert(false && "Classifier Number must be 0, 1 or 2.");
+    }
+
+    ActivationFunctions::Softmax(y);
+};
+
+/**
+ * @brief Forward for CDist/Cosine with lengths
+ *
+ * @param input
+ * @param lengths
+ * @param y
+ */
 void ECAPA_TDNN_classifier::forward(float (&input)[2][64], float &lengths, float (&y)[6][6])
 {
     initiallayer.forward(input, x0);
@@ -80,19 +144,71 @@ void ECAPA_TDNN_classifier::forward(float (&input)[2][64], float &lengths, float
 
     fc.forward(y1, y2);
 
-    if (this->isCosineBool)
+    if (ClassifierNumber == 0)
     {
         CosineClassifier.forward(y2, y);
     }
-    else
+    else if (ClassifierNumber == 1)
     {
         CDistClassifier.forward(y2, y);
+    }
+    else
+    {
+        assert(false && "Classifier Number must be 0, 1 or 2.");
     }
 
     ActivationFunctions::Softmax(y);
 };
 
-ECAPA_TDNN_classifier::ECAPA_TDNN_classifier(bool isCosine) : asp_BN(1), isCosineBool(isCosine)
+/**
+ * @brief Forward for EuclideanClassifier with Lengths
+ *
+ * @param input
+ * @param lengths
+ * @param y
+ */
+void ECAPA_TDNN_classifier::forward(float (&input)[2][64], float &lengths, float (&y)[6])
+{
+    initiallayer.forward(input, x0);
+
+    seres_1.forward(x0, lengths, x1);
+
+    seres_2.forward(x1, lengths, x2);
+
+    seres_3.forward(x2, lengths, x3);
+
+    // Cat
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 64; j++)
+        {
+            x_cat[i][j] = x1[i][j];
+            x_cat[8 + i][j] = x2[i][j];
+            x_cat[16 + i][j] = x3[i][j];
+        }
+    }
+
+    mfa.forward(x_cat, y0);
+
+    asp.forward(y0, lengths, y1);
+
+    asp_BN.forward(y1, y1);
+
+    fc.forward(y1, y2);
+
+    if (ClassifierNumber == 2)
+    {
+        EuclideanClassifier.forward(y2, y);
+    }
+    else
+    {
+        assert(false && "Classifier Number must be 0, 1 or 2.");
+    }
+
+    ActivationFunctions::Softmax(y);
+};
+
+ECAPA_TDNN_classifier::ECAPA_TDNN_classifier(int classno) : asp_BN(1), ClassifierNumber(classno)
 {
     std::cout << "ECAPA TDNN Classifier initialised in Eval Mode" << std::endl;
 };
@@ -138,15 +254,24 @@ void ECAPA_TDNN_classifier::loadweights(std::string pathname)
     // std::cout << "fc Loaded" << std::endl;
 
     // Classifier
-    if (this->isCosineBool)
+    if (this->ClassifierNumber == 0)
     {
         CosineClassifier.loadweights(infile);
         // std::cout << "CosineClassifier Loaded" << std::endl;
     }
-    else
+    else if (this->ClassifierNumber == 1)
     {
         CDistClassifier.loadweights(infile);
         // std::cout << "CDistClassifier Loaded" << std::endl;
+    }
+    else if (this->ClassifierNumber == 2)
+    {
+        EuclideanClassifier.loadweights(infile);
+        // std::cout << "EuclideanClassifier Loaded" << std::endl;
+    }
+    else
+    {
+        assert(false && "Classifier Number must be 0, 1 or 2.");
     }
 
     infile.close();

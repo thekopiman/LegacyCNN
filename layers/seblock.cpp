@@ -108,7 +108,7 @@ void SEBlock<channel_in, channel_se, channel_out, input_width, out_width, T>::fo
     {
         for (int j = 0; j < input_width; j++)
         {
-            this->mask[i][j] /= this->total[i];
+            this->mask[i][j];
         }
     }
 

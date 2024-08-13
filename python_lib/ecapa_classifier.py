@@ -306,6 +306,8 @@ class AttentiveStatisticsPooling(nn.Module):
             # https://github.com/pytorch/pytorch/issues/4320
             total = mask.sum(dim=2, keepdim=True).float()
             mean, std = _compute_statistics(x, mask / total)
+            print(mean)
+            print(std)
             mean = mean.unsqueeze(2).repeat(1, 1, L)
             std = std.unsqueeze(2).repeat(1, 1, L)
             attn = torch.cat([x, mean, std], dim=1)  # Append on the channel
@@ -582,6 +584,7 @@ class ECAPA_TDNN(torch.nn.Module):
                 x = layer(x, lengths=lengths)
             except TypeError:
                 x = layer(x)
+            print(x)
             xl.append(x)
 
         # Multi-layer feature aggregation
@@ -598,6 +601,7 @@ class ECAPA_TDNN(torch.nn.Module):
 
         # x = x.transpose(1, 2)
         x = self.probabilities(x)
+
         x = F.softmax(x, dim=2)
         return x
 

@@ -157,6 +157,8 @@ void ASP<channels, attention_channels, input_width, out_width, T>::forward(T (&i
         {
             this->mask[i][j] = 1;
         }
+
+        // total = mask.sum(dim=2, keepdim=True).float()
         this->total[i] = MatrixFunctions::Sum(this->mask[i]);
     }
 
@@ -183,8 +185,6 @@ void ASP<channels, attention_channels, input_width, out_width, T>::forward(T (&i
             this->attn[2 * channels + i][j] = this->std[i]; // std = std.unsqueeze(2).repeat(1, 1, L)
         }
     }
-
-    // Helper::print(this->attn);
 
     // apply layers
     this->tdnn.forward(this->attn, this->attn1);
@@ -253,9 +253,12 @@ void ASP<channels, attention_channels, input_width, out_width, T>::resetMask()
  * @param output
  */
 template <int channels, int attention_channels, int input_width, int out_width, typename T>
-void ASP<channels, attention_channels, input_width, out_width, T>::compute_statistics(T (&x)[channels][input_width], T (&m)[channels][input_width])
+void ASP<channels, attention_channels, input_width, out_width, T>::compute_statistics(T (&input)[channels][input_width], T (&m)[channels][input_width])
 {
     T temp[channels][input_width];
+    T x[channels][input_width];
+
+    MatrixFunctions::Copy(input, x);
 
     // Obtain Mean here
     MatrixFunctions::HadamardProduct(x, m, temp);

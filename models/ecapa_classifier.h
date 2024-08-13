@@ -26,6 +26,7 @@
 #include "../layers/asp.h"
 #include "../layers/cosinesimilarity.h"
 #include "../layers/cdist.h"
+#include "../layers/euclidean.h"
 #include "../utils/helper.h"
 #include "../utils/activationfunctions.h"
 #include "../utils/matrixfunctions.h"
@@ -33,10 +34,12 @@
 class ECAPA_TDNN_classifier
 {
 public:
-    ECAPA_TDNN_classifier(bool isCosine);
+    ECAPA_TDNN_classifier(int classno);
     ~ECAPA_TDNN_classifier();
     void forward(float (&input)[2][64], float (&y)[6][6]);
+    void forward(float (&input)[2][64], float (&y)[6]);
     void forward(float (&input)[2][64], float &lengths, float (&y)[6][6]);
+    void forward(float (&input)[2][64], float &lengths, float (&y)[6]);
     void loadweights(std::string pathname);
 
 private:
@@ -62,10 +65,11 @@ private:
     // Specify which classifier you will be using
     // I just initialise both, but will only be using 1 during loadweights/forward
 
-    bool isCosineBool = true;
+    int ClassifierNumber = 0; // CosineSimilarity = 0, CDist = 1, Euclidean = 2
 
     CosineSimilarity<6, 1, 6, float> CosineClassifier;
     CDist<6, 1, 6, float> CDistClassifier;
+    Euclidean<6, 1, float> EuclideanClassifier;
 };
 
 #include "ecapa_classifier.cpp"

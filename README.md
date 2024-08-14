@@ -112,13 +112,17 @@ class MyModel(){
 
 # Examples
 
-I have provided 2 examples in the `models` directory. The accompanying python files can be seen in
+I have provided 3 examples in the `models` directory. The accompanying python files can be seen in
 
 - python_lib
   - BasicModel.py `basiccnn.h`
   - modules.py `ecapa.h`
+  - ecapa_classifier.py `ecapa_classifier.h`
 - generate_basicmodelweights.ipynb `basiccnn.h`
 - generate_ecapaweights.ipynb `ecapa.h`
+- generate_ecapa_classifier_weights.ipynb `ecapa_classifier.h`
+
+Note: **lengths** is also tested in `ecapa_clasifier`.
 
 ### Compile & Run as follows
 
